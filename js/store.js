@@ -58,7 +58,10 @@ const Store = (() => {
   const local = (() => {
     const mem = { properties: new Map(), media: new Map(), leads: new Map(), rentals: new Map(), meta: new Map() };
     let dbp = null;
-    const open = () => dbp || (dbp = new Promise((res) => {
+    // Alguns navegadores (Safari antigo, pré-visualizações, modo privativo) nunca respondem ao IndexedDB.
+    // Se não responder a tempo, seguimos em memória para o site não ficar preso em "Carregando".
+    const withTimeout = (p, ms) => Promise.race([p, new Promise((r) => setTimeout(() => r(null), ms))]);
+    const open = () => dbp || (dbp = withTimeout(new Promise((res) => {
       try {
         const req = indexedDB.open("vc-imoveis", 2);
         req.onupgradeneeded = () => {
@@ -70,16 +73,18 @@ const Store = (() => {
         req.onerror = () => res(null);
         req.onblocked = () => res(null);
       } catch { res(null); }
-    }));
+    }), 3000));
     const run = async (store, mode, fn) => {
       const db = await open();
       if (!db) return null;
-      return new Promise((res, rej) => {
-        const t = db.transaction(store, mode);
-        const req = fn(t.objectStore(store));
-        t.oncomplete = () => res(req ? req.result : undefined);
-        t.onerror = () => rej(t.error);
-      });
+      return withTimeout(new Promise((res, rej) => {
+        try {
+          const t = db.transaction(store, mode);
+          const req = fn(t.objectStore(store));
+          t.oncomplete = () => res(req ? req.result : undefined);
+          t.onerror = () => rej(t.error);
+        } catch (ex) { rej(ex); }
+      }), 4000);
     };
     return {
       async all(store) { const r = await run(store, "readonly", (s) => s.getAll()); return r ?? [...mem[store].values()]; },

@@ -1,32 +1,80 @@
 {
   "cleanUrls": false,
   "rewrites": [
-    { "source": "/imovel/:code", "destination": "/api/imovel?code=:code" },
-    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
-    { "source": "/portais/vrsync.xml", "destination": "/api/feed" }
+    {
+      "source": "/imovel/:code",
+      "destination": "/api/imovel?code=:code"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/sitemap"
+    },
+    {
+      "source": "/portais/vrsync.xml",
+      "destination": "/api/feed"
+    }
   ],
   "functions": {
-    "api/imovel.js": { "includeFiles": "{imovel.html,js/config.js}" },
-    "api/sitemap.js": { "includeFiles": "js/config.js" },
-    "api/feed.js": { "includeFiles": "js/config.js" }
+    "api/imovel.js": {
+      "includeFiles": "{imovel.html,js/config.js}"
+    },
+    "api/sitemap.js": {
+      "includeFiles": "js/config.js"
+    },
+    "api/feed.js": {
+      "includeFiles": "js/config.js"
+    }
   },
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(), payment=()" },
-        { "key": "Strict-Transport-Security", "value": "max-age=31536000" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), payment=()"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=31536000"
+        }
       ]
     },
     {
       "source": "/admin.html",
       "headers": [
-        { "key": "X-Robots-Tag", "value": "noindex, nofollow" },
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "Cache-Control", "value": "no-store" }
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    },
+    {
+      "source": "/(js|css)/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
       ]
     }
   ]
