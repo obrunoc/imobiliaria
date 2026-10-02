@@ -2,30 +2,18 @@
 window.Site = (() => {
   "use strict";
 
-  // ---------- Utilidades ----------
-  const $ = (sel, el = document) => el.querySelector(sel);
-  const $$ = (sel, el = document) => [...el.querySelectorAll(sel)];
-  const brl = (n) => Number(n || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
-  const icon = (id) => `<svg aria-hidden="true"><use href="#i-${id}"/></svg>`;
-  const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
-  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const digits = (s) => String(s || "").replace(/\D/g, "");
-  const city = () => (typeof CITY !== "undefined" ? CITY : "Brazópolis - MG");
+  const { $, $$, brl, icon, plural, esc, digits, city, propUrl } = U;
 
   const totalOf = (p) => Number(p.price) + Number(p.condo || 0) + Number(p.iptu || 0);
   const comparable = (p) => (p.mode === "alugar" ? totalOf(p) : Number(p.price));
   const daysAgo = (p) => (Date.now() - Date.parse(p.created_at)) / 864e5;
-  const cover = (p) => (p.media.find((m) => m.type === "image") || p.media[0] || {}).src || "";
+  const firstImage = (p) => p.media.find((m) => m.type === "image") || p.media[0] || {};
+  /** Foto de capa; "thumb" usa a versão reduzida, própria para cards. */
+  const cover = (p, thumb = false) => { const m = firstImage(p); return (thumb && m.thumbSrc) || m.src || ""; };
   const priceDrop = (p) => (Number(p.old_price) > Number(p.price) ? Number(p.old_price) - Number(p.price) : 0);
 
   let settings = { ...(window.DEFAULT_SETTINGS || {}) };
-  const wa = (text, number = settings.whatsapp) => `https://wa.me/${digits(number)}${text ? `?text=${encodeURIComponent(text)}` : ""}`;
-
-  /** Link público do imóvel. Em produção usa /imovel/12 (com prévia no WhatsApp). */
-  function propUrl(p) {
-    const local = location.protocol === "file:" || ["localhost", "127.0.0.1"].includes(location.hostname);
-    return local ? `${location.origin}/imovel.html?cod=${p.code}` : `${location.origin}/imovel/${p.code}`;
-  }
+  const wa = (text, number = settings.whatsapp) => U.waTo(number, text);
 
   // ---------- Favoritos (só neste navegador) ----------
   const favorites = (() => {
@@ -82,13 +70,6 @@ window.Site = (() => {
       <input type="text" name="empresa" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />`;
   }
 
-  function phoneMask(el) {
-    const d = digits(el.value).slice(0, 11);
-    let out = d;
-    if (d.length > 2) out = `(${d.slice(0, 2)}) ${d.slice(2)}`;
-    if (d.length > 7) out = `(${d.slice(0, 2)}) ${d.slice(2, d.length - 4)}-${d.slice(-4)}`;
-    el.value = out;
-  }
 
   /**
    * Envia um pedido. Em caso de sucesso, troca o formulário por uma confirmação
@@ -142,11 +123,12 @@ window.Site = (() => {
     const fav = favorites.has(p.id);
     const rent = p.mode === "alugar";
     const extra = rent && totalOf(p) !== Number(p.price) ? `<span class="card__sub">${brl(totalOf(p))}/mês com condomínio e IPTU</span>` : "";
-    const src = cover(p);
+    const src = cover(p, true);
+    const eager = i < 3;
     return `
-      <article class="card" data-id="${esc(p.id)}" tabindex="0" style="animation-delay:${Math.min(i, 8) * 40}ms" aria-label="${esc(p.type)} em ${esc(p.neighborhood)}, código ${esc(p.code)}">
+      <article class="card" data-id="${esc(p.id)}" tabindex="0" aria-label="${esc(p.type)} em ${esc(p.neighborhood)}, código ${esc(p.code)}">
         <div class="card__media">
-          ${src ? `<img src="${esc(src)}" alt="" loading="lazy" />` : ""}
+          ${src ? `<img src="${esc(src)}" alt="" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async" />` : ""}
           ${badgesHTML(p)}
           <button class="fav-btn ${fav ? "is-fav" : ""}" data-fav="${esc(p.id)}" aria-pressed="${fav}" aria-label="Favoritar">${icon(fav ? "heart" : "heart-o")}</button>
         </div>
@@ -197,7 +179,7 @@ window.Site = (() => {
       <div class="detail">
         <div>
           <span class="detail__tag">${esc(p.type)} ${rent ? "para alugar" : "à venda"}${p.status === "reservado" ? " · Reservado" : ""}</span>
-          <h2 id="mTitle">${esc(p.neighborhood)}</h2>
+          <${inModal ? "h2" : "h1"} class="detail__title" id="mTitle">${esc(p.neighborhood)}</${inModal ? "h2" : "h1"}>
           <p class="muted">${p.street ? `${esc(p.street)} · ` : ""}${esc(city())} · Cód. ${esc(p.code)}</p>
           <div class="specs">${specsHTML(p)}</div>
 
@@ -296,9 +278,7 @@ window.Site = (() => {
 
     // copiar link
     $("[data-copy-link]", root)?.addEventListener("click", async () => {
-      const url = propUrl(p);
-      try { await navigator.clipboard.writeText(url); toast("Link copiado. É só colar no WhatsApp."); }
-      catch { prompt("Copie o link do imóvel:", url); }
+      if (await U.copy(propUrl(p))) toast("Link copiado. É só colar no WhatsApp.");
     });
 
     // agendamento → pedido de visita
@@ -341,12 +321,11 @@ window.Site = (() => {
   }
 
   // ---------- Eventos globais ----------
-  document.addEventListener("input", (e) => { if (e.target.dataset?.mask === "phone") phoneMask(e.target); });
+  document.addEventListener("input", (e) => { if (e.target.dataset?.mask === "phone") U.phoneMask(e.target); });
   document.addEventListener("error", (e) => { if (e.target.tagName === "IMG") e.target.classList.add("is-broken"); }, true);
 
   return {
-    $, $$, brl, icon, plural, esc, digits, city, wa,
-    totalOf, comparable, daysAgo, cover, priceDrop, propUrl,
+    wa, totalOf, comparable, daysAgo, cover, priceDrop,
     favorites, toast, loadSettings, get settings() { return settings; },
     consentHTML, submitLead,
     cardHTML, specsHTML, detailHTML, mountDetail,

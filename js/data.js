@@ -1,5 +1,7 @@
 /* Listas usadas pelo site e pelo painel + imóveis de exemplo do modo demonstração. */
-const IMG = (id) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=1200&q=70`;
+const UNSPLASH = (id, w, q) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=${q}`;
+// Cada foto de exemplo tem a versão grande (ficha do imóvel) e a miniatura (cards).
+const IMG = (id) => ({ url: UNSPLASH(id, 1400, 70), thumb: UNSPLASH(id, 640, 65) });
 
 const P = {
   houseModern: IMG("photo-1600596542815-ffad4c1539a9"),

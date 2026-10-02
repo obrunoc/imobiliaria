@@ -12,8 +12,22 @@ const Store = (() => {
   "use strict";
 
   const cfg = window.VC_CONFIG || {};
-  const isLive = Boolean(cfg.supabaseUrl && cfg.supabaseAnonKey && window.supabase);
-  const sb = isLive ? window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey) : null;
+  const isLive = Boolean(cfg.supabaseUrl && cfg.supabaseAnonKey);
+  const SUPABASE_JS = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js";
+
+  // A biblioteca do Supabase (~110 KB) só é baixada quando o banco está configurado.
+  let clientPromise = null;
+  function client() {
+    return clientPromise || (clientPromise = new Promise((resolve, reject) => {
+      const create = () => resolve(window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey));
+      if (window.supabase) { create(); return; }
+      const tag = document.createElement("script");
+      tag.src = SUPABASE_JS;
+      tag.onload = create;
+      tag.onerror = () => { clientPromise = null; reject(new Error("Não foi possível conectar ao banco de dados.")); };
+      document.head.appendChild(tag);
+    }));
+  }
 
   const BUCKET = "imoveis";
   const PUBLIC_STATUS = ["disponivel", "reservado"];
@@ -94,32 +108,41 @@ const Store = (() => {
         if (!db) { mem[store].set(key ?? val.id, val); return; }
         await run(store, "readwrite", (s) => (key === undefined ? s.put(val) : s.put(val, key)));
       },
+      async putMany(store, vals) {
+        const db = await open();
+        if (!db) { vals.forEach((v) => mem[store].set(v.id, v)); return; }
+        await run(store, "readwrite", (s) => { vals.forEach((v) => s.put(v)); return null; });
+      },
       async del(store, key) { const db = await open(); if (!db) { mem[store].delete(key); return; } await run(store, "readwrite", (s) => s.delete(key)); },
     };
   })();
 
+  const SEED_VERSION = 2;
   let seeding = null;
   function seedDemo() {
     return seeding || (seeding = (async () => {
-      if (await local.get("meta", "seeded")) return;
+      if ((await local.get("meta", "seeded")) === SEED_VERSION) return;
       const now = Date.now();
-      let code = 0;
-      for (const p of window.SEED_PROPERTIES || []) {
-        code++;
+      const rows = (window.SEED_PROPERTIES || []).map((p, i) => {
         const when = new Date(now - p.daysAgo * 864e5).toISOString();
-        await local.put("properties", {
+        return {
           ...pick(p, FIELDS),
           featured: Boolean(p.featured),
           old_price: p.old_price || null,
-          id: uid(),
-          code,
-          views: Math.round(20 + Math.random() * 180),
-          media: p.images.map((url) => ({ type: "image", url, path: null })),
+          id: `seed-${i + 1}`,
+          code: i + 1,
+          views: 20 + ((i * 37) % 160),
+          media: p.images.map((img) => ({ type: "image", url: img.url, thumb: img.thumb, path: null })),
           created_at: when,
           updated_at: when,
-        });
-      }
-      await local.put("meta", true, "seeded");
+        };
+      });
+      // remove exemplos antigos (ids aleatórios da versão 1) antes de gravar os novos
+      const old = await local.all("properties");
+      const seedLike = old.filter((x) => (window.SEED_PROPERTIES || []).some((sp) => sp.street === x.street && sp.type === x.type && x.code <= rows.length));
+      for (const x of seedLike) await local.del("properties", x.id);
+      await local.putMany("properties", rows);
+      await local.put("meta", SEED_VERSION, "seeded");
     })());
   }
 
@@ -135,10 +158,12 @@ const Store = (() => {
   }
 
   async function resolve(p) {
-    const media = await Promise.all((p.media || []).map(async (m) => ({ ...m, src: await resolveSrc(m.url) })));
+    const media = await Promise.all((p.media || []).map(async (m) => ({ ...m, src: await resolveSrc(m.url), thumbSrc: await resolveSrc(m.thumb) })));
     return { ...p, media };
   }
-  const resolveLive = (p) => ({ ...p, media: (p.media || []).map((m) => ({ ...m, src: m.url })) });
+  const resolveLive = (p) => ({ ...p, media: (p.media || []).map((m) => ({ ...m, src: m.url, thumbSrc: m.thumb || "" })) });
+  /** Todos os arquivos de um item de mídia (foto grande + miniatura). */
+  const pathsOf = (m) => [m.path, m.thumbPath].filter(Boolean);
 
   const byNewest = (a, b) => String(b.created_at).localeCompare(String(a.created_at));
   const fail = (error) => { if (error) throw error; };
@@ -146,6 +171,7 @@ const Store = (() => {
   // ---------- Imóveis ----------
   async function listPublic() {
     if (isLive) {
+      const sb = await client();
       const { data, error } = await sb.from("properties").select("*").in("status", PUBLIC_STATUS).order("created_at", { ascending: false });
       fail(error);
       return data.map(resolveLive);
@@ -159,6 +185,7 @@ const Store = (() => {
     code = Number(code);
     if (!code) return null;
     if (isLive) {
+      const sb = await client();
       const { data, error } = await sb.from("properties").select("*").eq("code", code).in("status", PUBLIC_STATUS).maybeSingle();
       fail(error);
       return data ? resolveLive(data) : null;
@@ -170,6 +197,7 @@ const Store = (() => {
 
   async function listAll() {
     if (isLive) {
+      const sb = await client();
       const { data, error } = await sb.from("properties").select("*").order("created_at", { ascending: false });
       fail(error);
       return data.map(resolveLive);
@@ -181,6 +209,7 @@ const Store = (() => {
   // ---------- Arquivos ----------
   async function uploadFile(folder, blob, name, type) {
     if (isLive) {
+      const sb = await client();
       const ext = blob.type === "image/jpeg" ? "jpg" : (name.split(".").pop() || "bin").toLowerCase();
       const path = `${folder}/${uid()}.${ext}`;
       const { error } = await sb.storage.from(BUCKET).upload(path, blob, { contentType: blob.type || undefined, upsert: false });
@@ -196,6 +225,7 @@ const Store = (() => {
     const list = paths.filter(Boolean);
     if (!list.length) return;
     if (isLive) {
+      const sb = await client();
       const remote = list.filter((p) => !p.startsWith("idb:"));
       if (remote.length) await sb.storage.from(BUCKET).remove(remote);
       return;
@@ -225,15 +255,21 @@ const Store = (() => {
     let done = 0;
     onProgress?.(0, pending.length);
     for (const m of mediaItems) {
-      if (!m.file) { media.push({ type: m.type, url: m.url, path: m.path || null }); continue; }
-      const blob = m.type === "image" ? await compressImage(m.file) : m.file;
-      media.push(await uploadFile(folder, blob, m.file.name, m.type));
+      if (!m.file) { media.push(pick(m, ["type", "url", "path", "thumb", "thumbPath"])); continue; }
+      if (m.type === "image") {
+        const [full, small] = await Promise.all([compressImage(m.file), compressImage(m.file, 640, 0.78)]);
+        const [up, upThumb] = await Promise.all([uploadFile(folder, full, m.file.name, "image"), uploadFile(folder, small, m.file.name, "image")]);
+        media.push({ ...up, thumb: upThumb.url, thumbPath: upThumb.path });
+      } else {
+        media.push(await uploadFile(folder, m.file, m.file.name, m.type));
+      }
       onProgress?.(++done, pending.length);
     }
 
     const row = { ...pick(input, FIELDS), media };
     let saved;
     if (isLive) {
+      const sb = await client();
       const q = input.id
         ? sb.from("properties").update(row).eq("id", input.id).select().single()
         : sb.from("properties").insert(row).select().single();
@@ -256,6 +292,7 @@ const Store = (() => {
 
   async function patchProperty(id, patch) {
     if (isLive) {
+      const sb = await client();
       const { error } = await sb.from("properties").update(patch).eq("id", id);
       fail(error);
       return;
@@ -267,12 +304,13 @@ const Store = (() => {
 
   async function remove(prop) {
     if (isLive) {
+      const sb = await client();
       const { error } = await sb.from("properties").delete().eq("id", prop.id);
       fail(error);
     } else {
       await local.del("properties", prop.id);
     }
-    await removeFiles((prop.media || []).map((m) => m.path));
+    await removeFiles((prop.media || []).flatMap(pathsOf));
   }
 
   /** Conta uma visualização (no máximo uma por imóvel por sessão do visitante). */
@@ -281,7 +319,8 @@ const Store = (() => {
     if (ss.get(key)) return;
     ss.set(key, "1");
     try {
-      if (isLive) { await sb.rpc("increment_view", { p_id: id }); return; }
+      if (isLive) {
+      const sb = await client(); await sb.rpc("increment_view", { p_id: id }); return; }
       const prev = await local.get("properties", id);
       if (prev) await local.put("properties", { ...prev, views: (prev.views || 0) + 1 });
     } catch { /* contagem é opcional */ }
@@ -307,6 +346,7 @@ const Store = (() => {
     if (row.name.length < 2) throw new Error("Informe seu nome.");
     if (row.phone.replace(/\D/g, "").length < 10) throw new Error("Informe um telefone com DDD.");
     if (isLive) {
+      const sb = await client();
       const { error } = await sb.from("leads").insert(row);
       fail(error);
       return;
@@ -316,6 +356,7 @@ const Store = (() => {
 
   async function listLeads() {
     if (isLive) {
+      const sb = await client();
       const { data, error } = await sb.from("leads").select("*").order("created_at", { ascending: false });
       fail(error);
       return data;
@@ -325,13 +366,15 @@ const Store = (() => {
 
   async function updateLead(id, patch) {
     const row = pick(patch, ["status", "notes"]);
-    if (isLive) { const { error } = await sb.from("leads").update(row).eq("id", id); fail(error); return; }
+    if (isLive) {
+      const sb = await client(); const { error } = await sb.from("leads").update(row).eq("id", id); fail(error); return; }
     const prev = await local.get("leads", id);
     await local.put("leads", { ...prev, ...row });
   }
 
   async function deleteLead(id) {
-    if (isLive) { const { error } = await sb.from("leads").delete().eq("id", id); fail(error); return; }
+    if (isLive) {
+      const sb = await client(); const { error } = await sb.from("leads").delete().eq("id", id); fail(error); return; }
     await local.del("leads", id);
   }
 
@@ -350,6 +393,7 @@ const Store = (() => {
   // ---------- Locações ativas ----------
   async function listRentals() {
     if (isLive) {
+      const sb = await client();
       const { data, error } = await sb.from("rentals").select("*").order("start_date", { ascending: false });
       fail(error);
       return data;
@@ -361,6 +405,7 @@ const Store = (() => {
     const row = pick(input, RENTAL_FIELDS);
     row.property_id = row.property_id || null;
     if (isLive) {
+      const sb = await client();
       const q = input.id
         ? sb.from("rentals").update(row).eq("id", input.id).select().single()
         : sb.from("rentals").insert(row).select().single();
@@ -375,7 +420,8 @@ const Store = (() => {
   }
 
   async function deleteRental(id) {
-    if (isLive) { const { error } = await sb.from("rentals").delete().eq("id", id); fail(error); return; }
+    if (isLive) {
+      const sb = await client(); const { error } = await sb.from("rentals").delete().eq("id", id); fail(error); return; }
     await local.del("rentals", id);
   }
 
@@ -384,6 +430,7 @@ const Store = (() => {
     let data = {};
     try {
       if (isLive) {
+      const sb = await client();
         const r = await sb.from("settings").select("data").eq("id", 1).maybeSingle();
         data = r.data?.data || {};
       } else {
@@ -398,6 +445,7 @@ const Store = (() => {
   async function saveSettings(input, removedPaths = []) {
     const data = { ...input, team: (input.team || []).map(({ photoSrc, ...m }) => m) };
     if (isLive) {
+      const sb = await client();
       const { error } = await sb.from("settings").upsert({ id: 1, data, updated_at: nowIso() });
       fail(error);
     } else {
@@ -410,6 +458,7 @@ const Store = (() => {
   const auth = {
     async user() {
       if (isLive) {
+      const sb = await client();
         const { data } = await sb.auth.getSession();
         const u = data.session?.user;
         if (!u) return null;
@@ -423,6 +472,7 @@ const Store = (() => {
     async signIn(email, password) {
       email = email.trim().toLowerCase();
       if (isLive) {
+      const sb = await client();
         const { error } = await sb.auth.signInWithPassword({ email, password });
         if (error) throw new Error("E-mail ou senha incorretos.");
         const { data: role, error: e2 } = await sb.rpc("my_role");
@@ -438,14 +488,14 @@ const Store = (() => {
       return { email: u.email, role: u.role };
     },
     async signOut() {
-      if (isLive) await sb.auth.signOut();
+      if (isLive) await (await client()).auth.signOut();
       ss.del("vc:demo-user");
     },
   };
 
   return {
     isLive, PUBLIC_STATUS, MAX_VIDEO_MB, DEMO_USERS,
-    listPublic, getPublicByCode, listAll, save, setStatus, patchProperty, remove, addView, uploadImage,
+    pathsOf, listPublic, getPublicByCode, listAll, save, setStatus, patchProperty, remove, addView, uploadImage,
     createLead, listLeads, updateLead, deleteLead, matches,
     listRentals, saveRental, deleteRental,
     getSettings, saveSettings,

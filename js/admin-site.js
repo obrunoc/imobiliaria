@@ -152,8 +152,7 @@ window.SiteSettings = (() => {
       ui.$$("#reviewsEdit [data-rk='text']").pop()?.focus();
     });
     $("#copyFeed").addEventListener("click", async () => {
-      try { await navigator.clipboard.writeText($("#feedUrl").value); ui.toast("Endereço copiado."); }
-      catch { $("#feedUrl").select(); }
+      if (await U.copy($("#feedUrl").value)) ui.toast("Endereço copiado.");
     });
   }
 

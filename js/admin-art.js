@@ -175,8 +175,7 @@ window.Art = (() => {
     document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("#artDialog").hidden) close(); });
     $$('input[name="artFormat"]').forEach((r) => r.addEventListener("change", () => { format = r.value; if (prop) draw(); }));
     $("#artCopy").addEventListener("click", async () => {
-      try { await navigator.clipboard.writeText($("#artCaption").value); ui.toast("Legenda copiada."); }
-      catch { $("#artCaption").select(); }
+      if (await U.copy($("#artCaption").value)) ui.toast("Legenda copiada.");
     });
     $("#artDownload").addEventListener("click", () => {
       const c = $("#artCanvas");

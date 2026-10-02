@@ -6,10 +6,15 @@
   <title>Política de Privacidade · VC Imóveis</title>
   <meta name="description" content="Como a VC Imóveis trata os dados pessoais de quem usa o site." />
   <link rel="icon" href="/img/favicon.svg" type="image/svg+xml" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/css/styles.css?v=20261002b" />
+  <link rel="preload" href="/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/montserrat-logo.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/css/styles.css?v=20261003a" />
+  <script defer src="/js/config.js?v=20261003a"></script>
+  <script defer src="/js/data.js?v=20261003a"></script>
+  <script defer src="/js/utils.js?v=20261003a"></script>
+  <script defer src="/js/store.js?v=20261003a"></script>
+  <script defer src="/js/site.js?v=20261003a"></script>
+  <script defer src="/js/privacidade.js?v=20261003a"></script>
 </head>
 <body>
   <!-- SPRITE:START -->
@@ -135,19 +140,5 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <!-- FOOTER:END -->
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-  <script src="/js/config.js?v=20261002b"></script>
-  <script src="/js/data.js?v=20261002b"></script>
-  <script src="/js/store.js?v=20261002b"></script>
-  <script src="/js/site.js?v=20261002b"></script>
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-    Site.loadSettings();
-    document.getElementById("menuBtn").addEventListener("click", function () {
-      var open = document.getElementById("nav").classList.toggle("is-open");
-      this.setAttribute("aria-expanded", open);
-    });
-    document.getElementById("openFavs").addEventListener("click", function () { location.href = "/#imoveis"; });
-  </script>
 </body>
 </html>

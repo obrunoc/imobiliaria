@@ -209,5 +209,5 @@ window.Rentals = (() => {
     });
   }
 
-  return { init, show, refresh, openNew, _timeline: timeline };
+  return { init, show, refresh, openNew };
 })();

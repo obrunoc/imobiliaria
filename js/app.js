@@ -1,9 +1,8 @@
 (() => {
   "use strict";
 
-  const { $, $$, brl, icon, plural, esc, digits, comparable, cover, favorites, toast } = Site;
-  const uniqSorted = (arr) => [...new Set(arr.filter(Boolean))].sort((a, b) => a.localeCompare(b, "pt-BR"));
-  const norm = (s) => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+  const { $, $$, brl, icon, plural, esc, digits, norm, uniqSorted } = U;
+  const { comparable, cover, favorites, toast } = Site;
 
   const PRICES = {
     comprar: [200000, 300000, 500000, 800000],
@@ -153,7 +152,7 @@
     $("#favList").innerHTML = items.length
       ? items.map((p) => `
         <div class="fav-item" data-open="${esc(p.id)}" tabindex="0">
-          <img src="${esc(cover(p))}" alt="" />
+          <img src="${esc(cover(p, true))}" alt="" loading="lazy" />
           <div><strong>${brl(p.price)}${p.mode === "alugar" ? "/mês" : ""}</strong><span>${esc(p.type)} · ${esc(p.neighborhood)} · Cód. ${esc(p.code)}</span></div>
           <button class="icon-btn" data-fav="${esc(p.id)}" aria-label="Remover dos favoritos">${icon("close")}</button>
         </div>`).join("")

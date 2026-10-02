@@ -2,7 +2,8 @@
 (() => {
   "use strict";
 
-  const { $, $$, esc, brl, icon, favorites, toast } = Site;
+  const { $, brl, icon } = U;
+  const { favorites, toast } = Site;
   const root = $("#propRoot");
 
   const codeFromUrl = () => {

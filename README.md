@@ -30,4 +30,11 @@ Para colocar no ar com banco de dados e login reais, siga o [CONFIGURAR.md](CONF
 - `js/data.js`: listas, dados padrão do site e imóveis de exemplo da demonstração
 - `api/`: funções da Vercel (prévia do link no WhatsApp, sitemap, integração com portais)
 - `supabase/setup.sql`: tabelas e regras de acesso do banco
-- `img/`: ícones e imagem de prévia
+- `js/utils.js`: utilitários comuns (escapar HTML, moeda, telefone, links)
+- `img/`, `fonts/`: ícones, imagem de prévia e fontes servidas pelo próprio site
+
+## Ao publicar mudanças em CSS ou JS
+
+As páginas carregam os arquivos com `?v=AAAAMMDDx` no endereço. Ao alterar CSS ou JS, troque esse
+valor em todas as páginas (`index.html`, `imovel.html`, `privacidade.html`, `admin.html`) para o
+navegador dos visitantes baixar a versão nova na hora.

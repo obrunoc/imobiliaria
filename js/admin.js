@@ -1,21 +1,7 @@
 (() => {
   "use strict";
 
-  const $ = (sel, el = document) => el.querySelector(sel);
-  const $$ = (sel, el = document) => [...el.querySelectorAll(sel)];
-  const brl = (n) => Number(n || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
-  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const icon = (id) => `<svg aria-hidden="true"><use href="#i-${id}"/></svg>`;
-  const digits = (s) => String(s || "").replace(/\D/g, "");
-  const norm = (s) => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
-  const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
-  const propUrl = (p) => (["localhost", "127.0.0.1"].includes(location.hostname) ? `${location.origin}/imovel.html?cod=${p.code}` : `${location.origin}/imovel/${p.code}`);
-  /** Link de WhatsApp para falar com um cliente (acrescenta 55 se faltar). */
-  const waTo = (phone, text) => {
-    let d = digits(phone);
-    if (d.length === 10 || d.length === 11) d = `55${d}`;
-    return `https://wa.me/${d}${text ? `?text=${encodeURIComponent(text)}` : ""}`;
-  };
+  const { $, $$, brl, esc, icon, digits, norm, plural, propUrl } = U;
 
   const STATUS = {
     disponivel: "Disponível",
@@ -77,7 +63,7 @@
 
   // Contexto compartilhado com os módulos (clientes, locações, documentos, site, arte)
   const ui = {
-    $, $$, brl, esc, icon, digits, norm, plural, toast, confirmBox, waTo, propUrl, STATUS,
+    ...U, toast, confirmBox, STATUS,
     get items() { return items; },
     get user() { return user; },
     isAdmin,
@@ -287,9 +273,7 @@
     if (e.target.closest("[data-contract]")) { setView("docs", p); return; }
     if (e.target.closest("[data-art]")) { Art.open(p); return; }
     if (e.target.closest("[data-link]")) {
-      const url = propUrl(p);
-      try { await navigator.clipboard.writeText(url); toast("Link do anúncio copiado. Cole no WhatsApp ou Instagram."); }
-      catch { prompt("Copie o link do anúncio:", url); }
+      if (await U.copy(propUrl(p))) toast("Link do anúncio copiado. Cole no WhatsApp ou Instagram.");
       return;
     }
     if (e.target.closest("[data-feat]")) {
@@ -443,7 +427,7 @@
     } else if (rm) {
       const [m] = ed.media.splice(+rm.dataset.i, 1);
       if (m.file) URL.revokeObjectURL(m.src);
-      else if (m.path) ed.removed.push(m.path);
+      else ed.removed.push(...Store.pathsOf(m));
     } else return;
     ed.dirty = true;
     renderMedia();
@@ -452,13 +436,7 @@
   // Máscaras de dinheiro e telefone (todas as telas do painel)
   document.addEventListener("input", (e) => {
     if (e.target.matches?.("[data-money]")) { const d = digits(e.target.value); e.target.value = d ? brl(+d) : ""; }
-    if (e.target.dataset?.mask === "phone") {
-      const d = digits(e.target.value).slice(0, 11);
-      let out = d;
-      if (d.length > 2) out = `(${d.slice(0, 2)}) ${d.slice(2)}`;
-      if (d.length > 7) out = `(${d.slice(0, 2)}) ${d.slice(2, d.length - 4)}-${d.slice(-4)}`;
-      e.target.value = out;
-    }
+    if (e.target.dataset?.mask === "phone") U.phoneMask(e.target);
   });
 
   $("#editForm").addEventListener("input", (e) => { ed.dirty = true; e.target.classList?.remove("is-invalid"); });

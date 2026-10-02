@@ -13,13 +13,10 @@
 }
 
 .admin { background: var(--soft); min-height: 100vh; }
-.btn--sm { height: 38px; padding: 0 14px; font-size: 14px; }
 .btn--danger { background: var(--danger); color: var(--white); }
 .btn--danger:hover { background: #a62c23; }
 .btn--danger-ghost { color: var(--danger); padding: 0 12px; }
 .btn--danger-ghost:hover { background: var(--danger-bg); }
-.btn[disabled] { opacity: .55; pointer-events: none; }
-.lbl { display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; }
 .lbl--gap { margin-top: 18px; }
 .hint { font-size: 13px; color: var(--muted); margin-top: 8px; }
 code { font-size: .92em; background: var(--soft); padding: 1px 6px; border-radius: 6px; }
@@ -109,15 +106,8 @@ code { font-size: .92em; background: var(--soft); padding: 1px 6px; border-radiu
 .ed-grid--3 { grid-template-columns: repeat(3, 1fr); }
 .ed-grid--4 { grid-template-columns: repeat(4, 1fr); }
 .span-2 { grid-column: span 2; }
-select.input { appearance: none; padding-right: 36px; cursor: pointer; background: var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6' fill='none' stroke='%23111' stroke-width='2'/%3E%3C/svg%3E") right 12px center/14px no-repeat; }
-.textarea { height: auto; padding: 12px 14px; resize: vertical; line-height: 1.5; }
 .input.is-invalid { border-color: var(--danger); background: var(--danger-bg); }
 
-.seg { display: grid; grid-template-columns: 1fr 1fr; background: var(--soft); border-radius: 12px; padding: 4px; }
-.seg input { position: absolute; opacity: 0; pointer-events: none; }
-.seg span { display: grid; place-items: center; height: 38px; border-radius: 9px; font-weight: 700; font-size: 14px; color: var(--muted); cursor: pointer; }
-.seg input:checked + span { background: var(--black); color: var(--white); }
-.seg input:focus-visible + span { outline: 3px solid var(--gold); outline-offset: 2px; }
 
 .dropzone { display: grid; justify-items: center; gap: 4px; text-align: center; padding: 26px 16px; border: 2px dashed var(--line); border-radius: var(--radius); cursor: pointer; transition: border-color .15s, background .15s; }
 .dropzone:hover, .dropzone.is-over { border-color: var(--gold); background: var(--yellow-100); }
@@ -179,8 +169,8 @@ select.input { appearance: none; padding-right: 36px; cursor: pointer; backgroun
 }
 
 /* Abas do painel */
-.admin-nav { display: flex; gap: 4px; margin-left: 12px; background: var(--soft); padding: 4px; border-radius: 999px; }
-.admin-nav button { height: 36px; padding: 0 16px; border-radius: 999px; font-weight: 700; font-size: 14px; color: var(--muted); }
+.admin-nav { display: flex; gap: 4px; margin-left: 12px; background: var(--soft); padding: 4px; border-radius: 999px; overflow-x: auto; scrollbar-width: none; max-width: 100%; }
+.admin-nav button { flex-shrink: 0; display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 16px; border-radius: 999px; font-weight: 700; font-size: 14px; color: var(--muted); }
 .admin-nav button.is-active { background: var(--white); color: var(--ink); box-shadow: 0 1px 3px rgba(0, 0, 0, .12); }
 
 /* Gerador de contrato */
@@ -245,8 +235,6 @@ select.input { appearance: none; padding-right: 36px; cursor: pointer; backgroun
 /* ===== Painel v2: abas, clientes, locações, documentos, site, arte ===== */
 .admin-header { height: auto; min-height: var(--header-h); }
 .admin-header .header__inner { flex-wrap: wrap; row-gap: 8px; padding-block: 8px; }
-.admin-nav { overflow-x: auto; scrollbar-width: none; max-width: 100%; }
-.admin-nav button { flex-shrink: 0; display: inline-flex; align-items: center; gap: 6px; }
 .nav-count { min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: var(--gold); color: var(--black); font-size: 11px; font-weight: 800; display: inline-grid; place-items: center; }
 .nav-count--warn { background: var(--warn-bg); color: var(--warn); }
 
@@ -258,7 +246,6 @@ select.input { appearance: none; padding-right: 36px; cursor: pointer; backgroun
 .feat-tag svg { width: 12px; height: 12px; }
 .row__sub svg { width: 13px; height: 13px; vertical-align: -2px; }
 .row__drop { display: block; font-size: 12px; font-weight: 600; color: #1f6b40; }
-.row { grid-template-columns: 112px minmax(0, 1fr) 150px 160px auto; }
 
 /* Clientes */
 .lead-list { margin-top: 18px; display: grid; gap: 12px; }

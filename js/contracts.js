@@ -5,11 +5,7 @@
 window.Contracts = (() => {
   "use strict";
 
-  const $ = (sel, el = document) => el.querySelector(sel);
-  const $$ = (sel, el = document) => [...el.querySelectorAll(sel)];
-  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const digits = (s) => String(s || "").replace(/\D/g, "");
-  const money = (n) => Number(n || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  const { $, $$, esc, digits, money } = U;
 
   // ---------- Números e datas por extenso ----------
   const UNITS = ["", "um", "dois", "três", "quatro", "cinco", "seis", "sete", "oito", "nove", "dez", "onze", "doze", "treze", "quatorze", "quinze", "dezesseis", "dezessete", "dezoito", "dezenove"];
@@ -410,6 +406,6 @@ window.Contracts = (() => {
     build: () => { readForm(); return build(state); },
     missing: () => { readForm(); return missing(state); },
     helpers: { intWords, moneyWords, cpfValid, cpfMask, parseDate, dateWords, money, isoToday, CIVIL },
-    _test: { intWords, moneyWords, cpfValid, build, blank },
+
   };
 })();

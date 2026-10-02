@@ -11,11 +11,10 @@ window.Docs = (() => {
   let settings = {};
   const H = () => Contracts.helpers;
 
-  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const { esc, money } = U;
   const ph = (label) => `<span class="ph">[${esc(label)}]</span>`;
   const val = (v, label) => (v === "" || v === null || v === undefined || v === 0 ? ph(label) : esc(v));
   const g = (sex, m, f) => (sex === "F" ? f : m);
-  const money = (n) => H().money(n);
   const moneyFull = (n) => `${money(n)} (${H().moneyWords(n)})`;
   const dateTxt = (iso, label = "data") => { const d = H().parseDate(iso); return d ? H().dateWords(d) : ph(label); };
   const cityDate = (s) => `<p class="date">${val(s.cidade, "cidade")}, ${dateTxt(s.data)}.</p>`;
@@ -504,5 +503,5 @@ window.Docs = (() => {
     }
   }
 
-  return { init, open, clearAll, _docs: DOCS, _state: state, _select: select };
+  return { init, open, clearAll };
 })();
