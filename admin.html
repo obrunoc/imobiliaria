@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <title>Painel VC Imóveis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body class="admin">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="logo-mark" viewBox="0 0 100 84">
+      <path d="M6 34 Q50 -6 94 34" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
+      <circle cx="47" cy="26" r="9.5" style="fill: var(--gold)"/>
+      <text x="50" y="81" text-anchor="middle" font-family="Montserrat, 'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="54" letter-spacing="-2" fill="currentColor">VC</text>
+    </symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4ZM13.5 6.5l4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M4 16v4h16v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7L8 5Z" fill="currentColor"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="10" r="1.8" fill="currentColor"/><path d="m4 18 5-5 4 4 3-3 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-out" viewBox="0 0 24 24"><path d="M10 5H5v14h5M15 8l4 4-4 4M19 12H9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6V3Z M14 3v4h4M9 12h6M9 16h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+    <symbol id="i-ext" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v6H4V6h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </svg>
+
+  <!-- Login -->
+  <div class="login" id="loginView" hidden>
+    <form class="login__card" id="loginForm" novalidate>
+      <a href="index.html" class="logo" aria-label="VC Imóveis — voltar ao site">
+        <svg class="logo__mark" aria-hidden="true"><use href="#logo-mark"/></svg>
+        <span class="logo__words"><span class="logo__name">IMÓVEIS</span><span class="logo__tag">Realizando sonhos</span></span>
+      </a>
+      <div>
+        <h1>Área da equipe</h1>
+        <p class="muted">Entre para cadastrar e gerenciar os imóveis do site.</p>
+      </div>
+      <label class="lbl" for="loginEmail">E-mail</label>
+      <input class="input" id="loginEmail" type="email" required autocomplete="username" />
+      <label class="lbl" for="loginPass">Senha</label>
+      <input class="input" id="loginPass" type="password" required autocomplete="current-password" />
+      <p class="form-error" id="loginError" role="alert" hidden></p>
+      <button class="btn btn--primary btn--block" type="submit" id="loginBtn">Entrar</button>
+      <div class="demo-note" id="demoNote" hidden>
+        <strong>Modo demonstração.</strong> Entre com <code>demo@vcimoveis.com.br</code> e a senha <code>demo123</code>.
+        <button type="button" class="link-btn" id="fillDemo">Preencher para mim</button>
+      </div>
+      <a href="index.html" class="link-btn back-link">← Voltar ao site</a>
+    </form>
+  </div>
+
+  <!-- Painel -->
+  <div id="appView" hidden>
+    <header class="header">
+      <div class="container header__inner">
+        <a href="index.html" class="logo" aria-label="VC Imóveis — ver site">
+          <svg class="logo__mark" aria-hidden="true"><use href="#logo-mark"/></svg>
+          <span class="logo__words"><span class="logo__name">IMÓVEIS</span><span class="logo__tag">Painel da equipe</span></span>
+        </a>
+        <nav class="admin-nav" aria-label="Seções do painel">
+          <button type="button" data-view="imoveis" class="is-active" aria-current="page">Imóveis</button>
+          <button type="button" data-view="contratos">Contratos</button>
+        </nav>
+        <div class="admin-actions">
+          <a class="btn btn--outline btn--sm" href="index.html" target="_blank" rel="noopener"><svg><use href="#i-ext"/></svg><span class="hide-sm">Ver site</span></a>
+          <span class="user-email hide-sm" id="userEmail"></span>
+          <button class="icon-btn" id="logoutBtn" aria-label="Sair" title="Sair"><svg><use href="#i-out"/></svg></button>
+        </div>
+      </div>
+    </header>
+
+    <div class="demo-banner" id="demoBanner" hidden>
+      <div class="container">Modo demonstração: o que você cadastrar fica salvo só neste navegador. Para colocar no ar de verdade, siga o guia CONFIGURAR.md.</div>
+    </div>
+
+    <main class="container panel" id="viewImoveis">
+      <div class="panel__head">
+        <div>
+          <h1>Imóveis</h1>
+          <p class="muted" id="summary"></p>
+        </div>
+        <button class="btn btn--primary" id="newBtn"><svg><use href="#i-plus"/></svg> Novo imóvel</button>
+      </div>
+
+      <div class="status-tabs" id="statusTabs" role="tablist" aria-label="Situação"></div>
+
+      <div class="toolbar">
+        <label class="search-box">
+          <svg><use href="#i-search"/></svg>
+          <span class="sr-only">Buscar</span>
+          <input id="q" type="search" placeholder="Buscar por bairro, rua ou código" />
+        </label>
+        <label class="select"><span class="sr-only">Negócio</span>
+          <select id="modeFilter">
+            <option value="">Venda e aluguel</option>
+            <option value="comprar">Só venda</option>
+            <option value="alugar">Só aluguel</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="feed" id="feed" aria-live="polite"></div>
+      <div class="feed-empty" id="feedEmpty" hidden></div>
+    </main>
+    <main class="container panel" id="viewContratos" hidden>
+      <div class="panel__head">
+        <div>
+          <h1>Contrato de locação</h1>
+          <p class="muted ct-note">Preencha e baixe o contrato pronto. Por segurança, nada do que você digita aqui é salvo nem enviado: ao sair da página, os dados são apagados.</p>
+        </div>
+        <div class="ct-actions">
+          <button class="btn btn--outline btn--sm" id="ctClear" type="button">Limpar</button>
+          <button class="btn btn--outline btn--sm" id="ctPdf" type="button">Imprimir / PDF</button>
+          <button class="btn btn--primary btn--sm" id="ctWord" type="button"><svg><use href="#i-doc"/></svg> Baixar Word</button>
+        </div>
+      </div>
+
+      <p class="ct-missing" id="ctMissing" hidden></p>
+
+      <div class="ct-layout">
+        <form class="ct-form" id="ctForm" autocomplete="off" novalidate>
+          <fieldset class="ct-section">
+            <legend>Imóvel</legend>
+            <label class="sr-only" for="ct-fromProp">Puxar dados de um imóvel cadastrado</label>
+            <select class="input" id="ct-fromProp"></select>
+            <div class="ct-fields">
+              <div class="span-2">
+                <label class="lbl" for="ct-imovel">Endereço do imóvel *</label>
+                <input class="input" id="ct-imovel" data-f="imovel" placeholder="Rua Exemplo, nº 10, bairro Centro, na cidade de Brazópolis/MG, CEP 37.530-000" />
+              </div>
+            </div>
+          </fieldset>
+
+          <div id="ctParties"></div>
+
+          <fieldset class="ct-section">
+            <legend>Condições</legend>
+            <div class="ct-fields">
+              <div><label class="lbl" for="ct-aluguel">Aluguel mensal *</label><input class="input" id="ct-aluguel" inputmode="numeric" placeholder="R$ 0,00" /></div>
+              <div><label class="lbl" for="ct-venc">Dia do vencimento *</label><input class="input" id="ct-venc" type="number" min="1" max="31" data-f="vencimento" placeholder="Ex.: 10" /></div>
+              <div><label class="lbl" for="ct-prazo">Prazo (meses) *</label><input class="input" id="ct-prazo" type="number" min="1" data-f="prazo" /></div>
+              <div><label class="lbl" for="ct-inicio">Início da locação *</label><input class="input" id="ct-inicio" type="date" data-f="inicio" /></div>
+              <div><label class="lbl" for="ct-indice">Índice de reajuste</label><select class="input" id="ct-indice" data-f="indice"></select></div>
+              <div><label class="lbl" for="ct-cidade">Cidade da assinatura</label><input class="input" id="ct-cidade" data-f="cidade" /></div>
+              <div><label class="lbl" for="ct-data">Data da assinatura</label><input class="input" id="ct-data" type="date" data-f="dataAssinatura" /></div>
+            </div>
+          </fieldset>
+          <button type="button" class="btn btn--outline btn--block ct-show" id="ctShowPreview">Ver o contrato ↓</button>
+        </form>
+
+        <div class="ct-preview" id="ctPreviewWrap" aria-label="Prévia do contrato">
+          <div class="ct-paper" id="ctDoc"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Editor -->
+  <div class="editor" id="editor" role="dialog" aria-modal="true" aria-labelledby="editorTitle" hidden>
+    <div class="editor__backdrop" data-editor-close></div>
+    <form class="editor__panel" id="editForm" novalidate>
+      <div class="editor__head">
+        <h2 id="editorTitle">Novo imóvel</h2>
+        <button type="button" class="icon-btn" data-editor-close aria-label="Fechar"><svg><use href="#i-close"/></svg></button>
+      </div>
+
+      <div class="editor__body">
+        <section class="ed-section">
+          <h3>Fotos e vídeos</h3>
+          <label class="dropzone" id="dropzone" for="fileInput">
+            <svg><use href="#i-upload"/></svg>
+            <strong>Toque para escolher ou arraste aqui</strong>
+            <span class="muted">Fotos (JPG, PNG) e vídeos (MP4, até <span id="maxVideo">50</span> MB)</span>
+            <input type="file" id="fileInput" accept="image/*,video/*" multiple />
+          </label>
+          <p class="hint">A primeira foto é a capa do anúncio. Use as setas para mudar a ordem.</p>
+          <div class="media-grid" id="mediaGrid"></div>
+        </section>
+
+        <section class="ed-section">
+          <h3>Anúncio</h3>
+          <div class="ed-grid">
+            <div>
+              <span class="lbl">Negócio</span>
+              <div class="seg" role="radiogroup" aria-label="Negócio">
+                <label><input type="radio" name="mode" value="comprar" checked /><span>Venda</span></label>
+                <label><input type="radio" name="mode" value="alugar" /><span>Aluguel</span></label>
+              </div>
+            </div>
+            <div>
+              <label class="lbl" for="eStatus">Situação</label>
+              <select class="input" id="eStatus"></select>
+            </div>
+          </div>
+        </section>
+
+        <section class="ed-section">
+          <h3>Imóvel</h3>
+          <div class="ed-grid">
+            <div>
+              <label class="lbl" for="eType">Tipo *</label>
+              <select class="input" id="eType" required></select>
+            </div>
+            <div>
+              <label class="lbl" for="eHood">Bairro *</label>
+              <input class="input" id="eHood" list="hoodList" required placeholder="Ex.: Centro" />
+              <datalist id="hoodList"></datalist>
+            </div>
+            <div class="span-2">
+              <label class="lbl" for="eStreet">Endereço</label>
+              <input class="input" id="eStreet" placeholder="Rua e número (aparece no anúncio)" />
+            </div>
+          </div>
+        </section>
+
+        <section class="ed-section">
+          <h3>Valores</h3>
+          <div class="ed-grid ed-grid--3">
+            <div>
+              <label class="lbl" for="ePrice" id="ePriceLabel">Preço de venda *</label>
+              <input class="input" id="ePrice" inputmode="numeric" required placeholder="R$ 0" data-money />
+            </div>
+            <div>
+              <label class="lbl" for="eCondo">Condomínio /mês</label>
+              <input class="input" id="eCondo" inputmode="numeric" placeholder="R$ 0" data-money />
+            </div>
+            <div>
+              <label class="lbl" for="eIptu">IPTU /mês</label>
+              <input class="input" id="eIptu" inputmode="numeric" placeholder="R$ 0" data-money />
+            </div>
+          </div>
+        </section>
+
+        <section class="ed-section">
+          <h3>Características</h3>
+          <div class="ed-grid ed-grid--4">
+            <div><label class="lbl" for="eArea">Área (m²)</label><input class="input" id="eArea" type="number" min="0" inputmode="numeric" /></div>
+            <div><label class="lbl" for="eBeds">Quartos</label><input class="input" id="eBeds" type="number" min="0" inputmode="numeric" /></div>
+            <div><label class="lbl" for="eBaths">Banheiros</label><input class="input" id="eBaths" type="number" min="0" inputmode="numeric" /></div>
+            <div><label class="lbl" for="eParking">Vagas</label><input class="input" id="eParking" type="number" min="0" inputmode="numeric" /></div>
+          </div>
+          <span class="lbl lbl--gap">Diferenciais</span>
+          <div class="amen-pick" id="eAmenities"></div>
+          <div class="amen-add">
+            <input class="input" id="eAmenityNew" placeholder="Outro diferencial (ex.: Poço artesiano)" />
+            <button type="button" class="btn btn--outline btn--sm" id="addAmenity">Adicionar</button>
+          </div>
+        </section>
+
+        <section class="ed-section">
+          <h3><label for="eDesc">Descrição</label></h3>
+          <textarea class="input textarea" id="eDesc" rows="5" placeholder="Conte o que o imóvel tem de melhor: localização, estado, acabamento, o que fica perto…"></textarea>
+        </section>
+      </div>
+
+      <div class="editor__foot">
+        <button type="button" class="btn btn--danger-ghost" id="deleteBtn" hidden><svg><use href="#i-trash"/></svg> Excluir</button>
+        <span class="progress" id="progress" hidden></span>
+        <div class="editor__foot-right">
+          <button type="button" class="btn btn--outline" data-editor-close>Cancelar</button>
+          <button type="submit" class="btn btn--primary" id="saveBtn">Salvar imóvel</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Confirmação -->
+  <div class="confirm" id="confirm" role="alertdialog" aria-modal="true" aria-labelledby="confirmText" hidden>
+    <div class="confirm__backdrop"></div>
+    <div class="confirm__card">
+      <p id="confirmText"></p>
+      <div class="confirm__actions">
+        <button class="btn btn--outline" id="confirmNo">Cancelar</button>
+        <button class="btn btn--danger" id="confirmYes">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ct-print" id="ctPrint"></div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/contracts.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
