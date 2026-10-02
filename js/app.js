@@ -346,6 +346,8 @@
 
   async function load() {
     $("#resultsCount").textContent = "Carregando imóveis…";
+    // cards provisórios no formato dos reais, para a página não parecer vazia
+    $("#grid").innerHTML = '<div class="card card--skeleton" aria-hidden="true"><div class="card__media"></div><div class="card__body"><i></i><i></i><i></i></div></div>'.repeat(3);
     Site.loadSettings().then(renderAbout);
     try {
       PROPERTIES = await Store.listPublic();

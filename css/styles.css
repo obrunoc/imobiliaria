@@ -415,6 +415,14 @@ select.input { appearance: none; padding-right: 34px; cursor: pointer; backgroun
   .alert-form__grid { grid-template-columns: 1fr; }
 }
 
+/* Cards provisórios enquanto os imóveis carregam */
+.card--skeleton { cursor: default; pointer-events: none; }
+.card--skeleton .card__media, .card--skeleton i { background: linear-gradient(90deg, var(--line) 25%, var(--soft) 50%, var(--line) 75%) 0 0 / 200% 100%; animation: shimmer 1.2s linear infinite; }
+.card--skeleton i { display: block; height: 14px; border-radius: 6px; margin-top: 10px; }
+.card--skeleton i:first-child { height: 22px; width: 50%; margin-top: 0; }
+.card--skeleton i:last-child { width: 70%; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
