@@ -3,13 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="robots" content="noindex" />
+  <meta name="robots" content="noindex, nofollow" />
   <title>Painel VC Imóveis</title>
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css" />
-  <link rel="stylesheet" href="css/admin.css" />
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="/css/admin.css" />
 </head>
 <body class="admin">
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -29,14 +30,22 @@
     <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7L8 5Z" fill="currentColor"/></symbol>
     <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="10" r="1.8" fill="currentColor"/><path d="m4 18 5-5 4 4 3-3 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
     <symbol id="i-out" viewBox="0 0 24 24"><path d="M10 5H5v14h5M15 8l4 4-4 4M19 12H9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-    <symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6V3Z M14 3v4h4M9 12h6M9 16h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></symbol>
     <symbol id="i-ext" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v6H4V6h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6V3Z M14 3v4h4M9 12h6M9 16h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 6 .5l3-3a4 4 0 0 0-5.7-5.7l-1.3 1.3M14 10a4 4 0 0 0-6-.5l-3 3a4 4 0 0 0 5.7 5.7l1.3-1.3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.8 5.8 6.2.9-4.5 4.4 1 6.3L12 17.5 6.5 20.4l1-6.3L3 9.7l6.2-.9L12 3Z" fill="currentColor"/></symbol>
+    <symbol id="i-star-o" viewBox="0 0 24 24"><path d="m12 3 2.8 5.8 6.2.9-4.5 4.4 1 6.3L12 17.5 6.5 20.4l1-6.3L3 9.7l6.2-.9L12 3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.5-.9 1-1.8-.6-1-.2-2.2 1-2.2H17a4 4 0 0 0 4-4c0-5.5-4-10-9-10Z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="7.5" cy="11" r="1.4" fill="currentColor"/><circle cx="10.5" cy="7" r="1.4" fill="currentColor"/><circle cx="15" cy="7.5" r="1.4" fill="currentColor"/></symbol>
+    <symbol id="i-whats" viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.5-2-1-1 .8a5 5 0 0 1-2.3-2.3l.8-1-1-2L9 8.5Z" fill="currentColor"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v12M7 11l5 5 5-5M4 20h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   </svg>
 
   <!-- Login -->
   <div class="login" id="loginView" hidden>
     <form class="login__card" id="loginForm" novalidate>
-      <a href="index.html" class="logo" aria-label="VC Imóveis — voltar ao site">
+      <a href="/" class="logo" aria-label="VC Imóveis — voltar ao site">
         <svg class="logo__mark" aria-hidden="true"><use href="#logo-mark"/></svg>
         <span class="logo__words"><span class="logo__name">IMÓVEIS</span><span class="logo__tag">Realizando sonhos</span></span>
       </a>
@@ -51,27 +60,30 @@
       <p class="form-error" id="loginError" role="alert" hidden></p>
       <button class="btn btn--primary btn--block" type="submit" id="loginBtn">Entrar</button>
       <div class="demo-note" id="demoNote" hidden>
-        <strong>Modo demonstração.</strong> Entre com <code>demo@vcimoveis.com.br</code> e a senha <code>demo123</code>.
-        <button type="button" class="link-btn" id="fillDemo">Preencher para mim</button>
+        <strong>Modo demonstração.</strong> Dono: <code>demo@vcimoveis.com.br</code> · Corretor: <code>corretor@vcimoveis.com.br</code> · senha <code>demo123</code>.
+        <button type="button" class="link-btn" id="fillDemo">Entrar como dono</button>
       </div>
-      <a href="index.html" class="link-btn back-link">← Voltar ao site</a>
+      <a href="/" class="link-btn back-link">← Voltar ao site</a>
     </form>
   </div>
 
   <!-- Painel -->
   <div id="appView" hidden>
-    <header class="header">
+    <header class="header admin-header">
       <div class="container header__inner">
-        <a href="index.html" class="logo" aria-label="VC Imóveis — ver site">
+        <a href="/" class="logo" aria-label="VC Imóveis — ver site" target="_blank" rel="noopener">
           <svg class="logo__mark" aria-hidden="true"><use href="#logo-mark"/></svg>
           <span class="logo__words"><span class="logo__name">IMÓVEIS</span><span class="logo__tag">Painel da equipe</span></span>
         </a>
         <nav class="admin-nav" aria-label="Seções do painel">
           <button type="button" data-view="imoveis" class="is-active" aria-current="page">Imóveis</button>
-          <button type="button" data-view="contratos">Contratos</button>
+          <button type="button" data-view="clientes">Clientes <span class="nav-count" id="leadCount" hidden>0</span></button>
+          <button type="button" data-view="locacoes">Locações <span class="nav-count nav-count--warn" id="rentalCount" hidden>0</span></button>
+          <button type="button" data-view="docs">Documentos</button>
+          <button type="button" data-view="site" data-admin-only>Site</button>
         </nav>
         <div class="admin-actions">
-          <a class="btn btn--outline btn--sm" href="index.html" target="_blank" rel="noopener"><svg><use href="#i-ext"/></svg><span class="hide-sm">Ver site</span></a>
+          <a class="btn btn--outline btn--sm" href="/" target="_blank" rel="noopener"><svg><use href="#i-ext"/></svg><span class="hide-sm">Ver site</span></a>
           <span class="user-email hide-sm" id="userEmail"></span>
           <button class="icon-btn" id="logoutBtn" aria-label="Sair" title="Sair"><svg><use href="#i-out"/></svg></button>
         </div>
@@ -82,6 +94,7 @@
       <div class="container">Modo demonstração: o que você cadastrar fica salvo só neste navegador. Para colocar no ar de verdade, siga o guia CONFIGURAR.md.</div>
     </div>
 
+    <!-- ===== Imóveis ===== -->
     <main class="container panel" id="viewImoveis">
       <div class="panel__head">
         <div>
@@ -111,60 +124,160 @@
       <div class="feed" id="feed" aria-live="polite"></div>
       <div class="feed-empty" id="feedEmpty" hidden></div>
     </main>
-    <main class="container panel" id="viewContratos" hidden>
+
+    <!-- ===== Clientes ===== -->
+    <main class="container panel" id="viewClientes" hidden>
       <div class="panel__head">
         <div>
-          <h1>Contrato de locação</h1>
-          <p class="muted ct-note">Preencha e baixe o contrato pronto. Por segurança, nada do que você digita aqui é salvo nem enviado: ao sair da página, os dados são apagados.</p>
+          <h1>Clientes</h1>
+          <p class="muted" id="leadSummary">Pedidos de visita, "me avise" e proprietários que querem anunciar.</p>
+        </div>
+        <button class="btn btn--outline btn--sm" id="purgeLeads" type="button" data-admin-only>Apagar pedidos com mais de 12 meses</button>
+      </div>
+      <div class="status-tabs" id="leadTabs" role="tablist" aria-label="Situação do atendimento"></div>
+      <div class="toolbar">
+        <label class="search-box">
+          <svg><use href="#i-search"/></svg>
+          <span class="sr-only">Buscar cliente</span>
+          <input id="leadQ" type="search" placeholder="Buscar por nome, telefone ou código do imóvel" />
+        </label>
+        <label class="select"><span class="sr-only">Tipo de pedido</span>
+          <select id="leadKind">
+            <option value="">Todos os pedidos</option>
+            <option value="visita">Pedidos de visita</option>
+            <option value="alerta">Me avise</option>
+            <option value="anunciar">Proprietários</option>
+          </select>
+        </label>
+      </div>
+      <div class="lead-list" id="leadList" aria-live="polite"></div>
+      <p class="privacy-hint">Dados pessoais de clientes: use só para o atendimento. Quando o cliente pedir, apague o pedido (botão da lixeira).</p>
+    </main>
+
+    <!-- ===== Locações ===== -->
+    <main class="container panel" id="viewLocacoes" hidden>
+      <div class="panel__head">
+        <div>
+          <h1>Locações ativas</h1>
+          <p class="muted">Acompanhe fim de contrato e reajustes. Guardamos só o básico: CPF e RG ficam apenas no contrato assinado.</p>
+        </div>
+        <button class="btn btn--primary" id="newRental"><svg><use href="#i-plus"/></svg> Nova locação</button>
+      </div>
+      <div class="rental-alerts" id="rentalAlerts"></div>
+      <div class="status-tabs" id="rentalTabs" role="tablist" aria-label="Situação da locação"></div>
+      <div class="rental-list" id="rentalList"></div>
+    </main>
+
+    <!-- ===== Documentos ===== -->
+    <main class="container panel" id="viewDocs" hidden>
+      <div class="panel__head">
+        <div>
+          <h1>Documentos</h1>
+          <p class="muted ct-note">Gere contratos, recibos e termos prontos. Por segurança, nada do que você digita aqui é salvo nem enviado: ao sair da página, os dados são apagados.</p>
         </div>
         <div class="ct-actions">
           <button class="btn btn--outline btn--sm" id="ctClear" type="button">Limpar</button>
+          <button class="btn btn--outline btn--sm" id="ctRental" type="button" hidden>Registrar locação</button>
           <button class="btn btn--outline btn--sm" id="ctPdf" type="button">Imprimir / PDF</button>
           <button class="btn btn--primary btn--sm" id="ctWord" type="button"><svg><use href="#i-doc"/></svg> Baixar Word</button>
         </div>
       </div>
 
+      <div class="doc-types" id="docTypes" role="tablist" aria-label="Tipo de documento"></div>
+      <p class="doc-notice" id="docNotice" hidden></p>
       <p class="ct-missing" id="ctMissing" hidden></p>
 
       <div class="ct-layout">
-        <form class="ct-form" id="ctForm" autocomplete="off" novalidate>
-          <fieldset class="ct-section">
-            <legend>Imóvel</legend>
-            <label class="sr-only" for="ct-fromProp">Puxar dados de um imóvel cadastrado</label>
-            <select class="input" id="ct-fromProp"></select>
-            <div class="ct-fields">
-              <div class="span-2">
-                <label class="lbl" for="ct-imovel">Endereço do imóvel *</label>
-                <input class="input" id="ct-imovel" data-f="imovel" placeholder="Rua Exemplo, nº 10, bairro Centro, na cidade de Brazópolis/MG, CEP 37.530-000" />
+        <div>
+          <form class="ct-form" id="ctForm" autocomplete="off" novalidate>
+            <fieldset class="ct-section">
+              <legend>Imóvel</legend>
+              <label class="sr-only" for="ct-fromProp">Puxar dados de um imóvel cadastrado</label>
+              <select class="input" id="ct-fromProp"></select>
+              <div class="ct-fields">
+                <div class="span-2">
+                  <label class="lbl" for="ct-imovel">Endereço do imóvel *</label>
+                  <input class="input" id="ct-imovel" data-f="imovel" placeholder="Rua Exemplo, nº 10, bairro Centro, na cidade de Brazópolis/MG, CEP 37.530-000" />
+                </div>
               </div>
-            </div>
-          </fieldset>
+            </fieldset>
 
-          <div id="ctParties"></div>
+            <div id="ctParties"></div>
 
-          <fieldset class="ct-section">
-            <legend>Condições</legend>
-            <div class="ct-fields">
-              <div><label class="lbl" for="ct-aluguel">Aluguel mensal *</label><input class="input" id="ct-aluguel" inputmode="numeric" placeholder="R$ 0,00" /></div>
-              <div><label class="lbl" for="ct-venc">Dia do vencimento *</label><input class="input" id="ct-venc" type="number" min="1" max="31" data-f="vencimento" placeholder="Ex.: 10" /></div>
-              <div><label class="lbl" for="ct-prazo">Prazo (meses) *</label><input class="input" id="ct-prazo" type="number" min="1" data-f="prazo" /></div>
-              <div><label class="lbl" for="ct-inicio">Início da locação *</label><input class="input" id="ct-inicio" type="date" data-f="inicio" /></div>
-              <div><label class="lbl" for="ct-indice">Índice de reajuste</label><select class="input" id="ct-indice" data-f="indice"></select></div>
-              <div><label class="lbl" for="ct-cidade">Cidade da assinatura</label><input class="input" id="ct-cidade" data-f="cidade" /></div>
-              <div><label class="lbl" for="ct-data">Data da assinatura</label><input class="input" id="ct-data" type="date" data-f="dataAssinatura" /></div>
-            </div>
-          </fieldset>
-          <button type="button" class="btn btn--outline btn--block ct-show" id="ctShowPreview">Ver o contrato ↓</button>
-        </form>
+            <fieldset class="ct-section">
+              <legend>Condições</legend>
+              <div class="ct-fields">
+                <div><label class="lbl" for="ct-aluguel">Aluguel mensal *</label><input class="input" id="ct-aluguel" inputmode="numeric" placeholder="R$ 0,00" /></div>
+                <div><label class="lbl" for="ct-venc">Dia do vencimento *</label><input class="input" id="ct-venc" type="number" min="1" max="31" data-f="vencimento" placeholder="Ex.: 10" /></div>
+                <div><label class="lbl" for="ct-prazo">Prazo (meses) *</label><input class="input" id="ct-prazo" type="number" min="1" data-f="prazo" /></div>
+                <div><label class="lbl" for="ct-inicio">Início da locação *</label><input class="input" id="ct-inicio" type="date" data-f="inicio" /></div>
+                <div><label class="lbl" for="ct-indice">Índice de reajuste</label><select class="input" id="ct-indice" data-f="indice"></select></div>
+                <div><label class="lbl" for="ct-cidade">Cidade da assinatura</label><input class="input" id="ct-cidade" data-f="cidade" /></div>
+                <div><label class="lbl" for="ct-data">Data da assinatura</label><input class="input" id="ct-data" type="date" data-f="dataAssinatura" /></div>
+              </div>
+            </fieldset>
+          </form>
+          <form class="ct-form" id="docForm" autocomplete="off" novalidate hidden></form>
+          <button type="button" class="btn btn--outline btn--block ct-show" id="ctShowPreview">Ver o documento ↓</button>
+        </div>
 
-        <div class="ct-preview" id="ctPreviewWrap" aria-label="Prévia do contrato">
+        <div class="ct-preview" id="ctPreviewWrap" aria-label="Prévia do documento">
           <div class="ct-paper" id="ctDoc"></div>
         </div>
       </div>
     </main>
+
+    <!-- ===== Site ===== -->
+    <main class="container panel" id="viewSite" hidden>
+      <div class="panel__head">
+        <div>
+          <h1>Dados do site</h1>
+          <p class="muted">Tudo o que estiver aqui aparece para qualquer visitante do site. Só o dono (admin) pode alterar.</p>
+        </div>
+        <button class="btn btn--primary" id="saveSite" type="button">Salvar alterações</button>
+      </div>
+      <form class="site-form" id="siteForm" autocomplete="off" novalidate>
+        <fieldset class="ct-section">
+          <legend>Contatos</legend>
+          <div class="ct-fields">
+            <div><label class="lbl" for="sWhats">WhatsApp da imobiliária *</label><input class="input" id="sWhats" data-k="whatsapp" inputmode="numeric" placeholder="(35) 99999-9999" /></div>
+            <div><label class="lbl" for="sPhone">Telefone exibido no site</label><input class="input" id="sPhone" data-k="phone" placeholder="(35) 3641-0000" /></div>
+            <div><label class="lbl" for="sEmail">E-mail</label><input class="input" id="sEmail" data-k="email" type="email" placeholder="contato@vcimoveis.com.br" /></div>
+            <div><label class="lbl" for="sCreci">CRECI da imobiliária</label><input class="input" id="sCreci" data-k="creci" placeholder="00000-J" /></div>
+            <div class="span-2"><label class="lbl" for="sAddress">Endereço do escritório</label><input class="input" id="sAddress" data-k="address" /></div>
+            <div><label class="lbl" for="sHours">Horário de atendimento</label><input class="input" id="sHours" data-k="hours" /></div>
+            <div><label class="lbl" for="sInsta">Instagram</label><input class="input" id="sInsta" data-k="instagram" placeholder="@vcimoveis" /></div>
+          </div>
+        </fieldset>
+        <fieldset class="ct-section">
+          <legend>Quem somos</legend>
+          <label class="lbl" for="sAbout">Texto de apresentação</label>
+          <textarea class="input textarea" id="sAbout" data-k="about" rows="5" maxlength="1200"></textarea>
+        </fieldset>
+        <fieldset class="ct-section">
+          <legend>Equipe</legend>
+          <p class="hint">Só publique nome e foto de quem autorizou aparecer no site.</p>
+          <div class="team-edit" id="teamEdit"></div>
+          <button type="button" class="btn btn--outline btn--sm" id="addMember"><svg><use href="#i-plus"/></svg> Adicionar pessoa</button>
+        </fieldset>
+        <fieldset class="ct-section">
+          <legend>Depoimentos e avaliações</legend>
+          <label class="lbl" for="sGoogle">Link das avaliações no Google</label>
+          <input class="input" id="sGoogle" data-k="googleReviewsUrl" type="url" placeholder="https://g.page/r/..." />
+          <p class="hint">No Google Maps, abra a VC Imóveis → Compartilhar → copie o link. Para depoimentos abaixo, use só falas reais, com autorização do cliente.</p>
+          <div class="reviews-edit" id="reviewsEdit"></div>
+          <button type="button" class="btn btn--outline btn--sm" id="addReview"><svg><use href="#i-plus"/></svg> Adicionar depoimento</button>
+        </fieldset>
+        <fieldset class="ct-section">
+          <legend>Portais imobiliários (ZAP, Viva Real, OLX)</legend>
+          <p class="hint">Ao contratar um plano com o Grupo OLX/ZAP, informe ao suporte este endereço de integração. Os imóveis <b>disponíveis</b> do site são enviados automaticamente.</p>
+          <div class="copy-field"><input class="input" id="feedUrl" readonly /><button type="button" class="btn btn--outline btn--sm" id="copyFeed"><svg><use href="#i-link"/></svg> Copiar</button></div>
+        </fieldset>
+      </form>
+    </main>
   </div>
 
-  <!-- Editor -->
+  <!-- Editor de imóvel -->
   <div class="editor" id="editor" role="dialog" aria-modal="true" aria-labelledby="editorTitle" hidden>
     <div class="editor__backdrop" data-editor-close></div>
     <form class="editor__panel" id="editForm" novalidate>
@@ -200,6 +313,7 @@
               <label class="lbl" for="eStatus">Situação</label>
               <select class="input" id="eStatus"></select>
             </div>
+            <label class="ct-toggle span-2"><input type="checkbox" id="eFeatured" /><span>Mostrar em <b>Destaques da semana</b> na página inicial</span></label>
           </div>
         </section>
 
@@ -238,6 +352,7 @@
               <input class="input" id="eIptu" inputmode="numeric" placeholder="R$ 0" data-money />
             </div>
           </div>
+          <p class="hint" id="priceHint">Se você baixar o preço, o site mostra o selo "Baixou o preço" automaticamente.</p>
         </section>
 
         <section class="ed-section">
@@ -273,6 +388,70 @@
     </form>
   </div>
 
+  <!-- Editor de locação -->
+  <div class="editor" id="rentalEditor" role="dialog" aria-modal="true" aria-labelledby="rentalTitle" hidden>
+    <div class="editor__backdrop" data-rental-close></div>
+    <form class="editor__panel editor__panel--sm" id="rentalForm" novalidate>
+      <div class="editor__head">
+        <h2 id="rentalTitle">Nova locação</h2>
+        <button type="button" class="icon-btn" data-rental-close aria-label="Fechar"><svg><use href="#i-close"/></svg></button>
+      </div>
+      <div class="editor__body">
+        <section class="ed-section">
+          <div class="ed-grid">
+            <div class="span-2"><label class="lbl" for="rProp">Imóvel</label><select class="input" id="rProp"></select></div>
+            <div class="span-2"><label class="lbl" for="rLabel">Descrição do imóvel *</label><input class="input" id="rLabel" maxlength="200" placeholder="Ex.: Casa · Rua das Acácias, 120 · Jardim América" /></div>
+            <div><label class="lbl" for="rTenant">Inquilino *</label><input class="input" id="rTenant" maxlength="120" /></div>
+            <div><label class="lbl" for="rPhone">WhatsApp do inquilino</label><input class="input" id="rPhone" type="tel" data-mask="phone" /></div>
+            <div class="span-2"><label class="lbl" for="rOwner">Proprietário</label><input class="input" id="rOwner" maxlength="120" /></div>
+            <div><label class="lbl" for="rRent">Aluguel atual *</label><input class="input" id="rRent" inputmode="numeric" data-money placeholder="R$ 0" /></div>
+            <div><label class="lbl" for="rDue">Dia do vencimento</label><input class="input" id="rDue" type="number" min="1" max="31" /></div>
+            <div><label class="lbl" for="rStart">Início do contrato *</label><input class="input" id="rStart" type="date" /></div>
+            <div><label class="lbl" for="rMonths">Prazo (meses) *</label><input class="input" id="rMonths" type="number" min="1" /></div>
+            <div><label class="lbl" for="rIndex">Índice de reajuste</label><select class="input" id="rIndex"><option>IPCA</option><option>IGP-M</option></select></div>
+            <div><label class="lbl" for="rStatus">Situação</label><select class="input" id="rStatus"><option value="ativa">Ativa</option><option value="encerrada">Encerrada</option></select></div>
+            <div class="span-2"><label class="lbl" for="rNotes">Observações</label><textarea class="input textarea" id="rNotes" rows="3" maxlength="2000" placeholder="Ex.: garantia por fiador; reajuste de 2027 já aplicado"></textarea></div>
+          </div>
+          <p class="hint">Não registre CPF, RG ou dados bancários aqui.</p>
+        </section>
+      </div>
+      <div class="editor__foot">
+        <button type="button" class="btn btn--danger-ghost" id="rDelete" hidden><svg><use href="#i-trash"/></svg> Excluir</button>
+        <div class="editor__foot-right">
+          <button type="button" class="btn btn--outline" data-rental-close>Cancelar</button>
+          <button type="submit" class="btn btn--primary" id="rSave">Salvar locação</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Arte para Instagram -->
+  <div class="editor" id="artDialog" role="dialog" aria-modal="true" aria-labelledby="artTitle" hidden>
+    <div class="editor__backdrop" data-art-close></div>
+    <div class="editor__panel editor__panel--sm">
+      <div class="editor__head">
+        <h2 id="artTitle">Arte para Instagram</h2>
+        <button type="button" class="icon-btn" data-art-close aria-label="Fechar"><svg><use href="#i-close"/></svg></button>
+      </div>
+      <div class="editor__body">
+        <div class="seg art-format" role="radiogroup" aria-label="Formato">
+          <label><input type="radio" name="artFormat" value="post" checked /><span>Post (quadrado)</span></label>
+          <label><input type="radio" name="artFormat" value="story" /><span>Story (vertical)</span></label>
+        </div>
+        <div class="art-stage"><canvas id="artCanvas" width="1080" height="1080"></canvas></div>
+        <p class="hint" id="artHint"></p>
+        <label class="lbl" for="artCaption">Legenda sugerida</label>
+        <textarea class="input textarea" id="artCaption" rows="7"></textarea>
+      </div>
+      <div class="editor__foot">
+        <button type="button" class="btn btn--outline" id="artCopy"><svg><use href="#i-link"/></svg> Copiar legenda</button>
+        <div class="editor__foot-right">
+          <button type="button" class="btn btn--primary" id="artDownload"><svg><use href="#i-download"/></svg> Baixar imagem</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Confirmação -->
   <div class="confirm" id="confirm" role="alertdialog" aria-modal="true" aria-labelledby="confirmText" hidden>
     <div class="confirm__backdrop"></div>
@@ -287,13 +466,18 @@
 
   <div class="ct-print" id="ctPrint"></div>
 
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"><span id="toastText"></span><button type="button" class="toast__action" id="toastAction" hidden></button></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-  <script src="js/config.js"></script>
-  <script src="js/data.js"></script>
-  <script src="js/store.js"></script>
-  <script src="js/contracts.js"></script>
-  <script src="js/admin.js"></script>
+  <script src="/js/config.js"></script>
+  <script src="/js/data.js"></script>
+  <script src="/js/store.js"></script>
+  <script src="/js/contracts.js"></script>
+  <script src="/js/docs.js"></script>
+  <script src="/js/admin-leads.js"></script>
+  <script src="/js/admin-rentals.js"></script>
+  <script src="/js/admin-site.js"></script>
+  <script src="/js/admin-art.js"></script>
+  <script src="/js/admin.js"></script>
 </body>
 </html>

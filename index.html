@@ -3,15 +3,24 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>VC Imóveis</title>
-  <meta name="description" content="VC Imóveis: casas, apartamentos e terrenos para comprar ou alugar em Brazópolis - MG." />
+  <title>VC Imóveis · Casas e apartamentos em Brazópolis - MG</title>
+  <meta name="description" content="VC Imóveis: casas, apartamentos e terrenos para comprar ou alugar em Brazópolis - MG. Veja fotos, valores e agende sua visita." />
+  <meta name="theme-color" content="#2b2c2e" />
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="VC Imóveis" />
+  <meta property="og:title" content="VC Imóveis · Realizando sonhos em Brazópolis" />
+  <meta property="og:description" content="Casas, apartamentos e terrenos para comprar ou alugar em Brazópolis - MG." />
+  <meta property="og:image" content="https://vc-imoveis.vercel.app/img/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body>
-  <!-- Ícones SVG -->
+  <!-- SPRITE:START -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
     <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-9.3-9.4C1.4 7.6 3.6 4 7.2 4c2 0 3.4 1.1 4.8 2.8C13.4 5.1 14.8 4 16.8 4c3.6 0 5.8 3.6 4.5 7.1-1.8 4.8-9.3 9.4-9.3 9.4Z" fill="currentColor"/></symbol>
@@ -28,23 +37,36 @@
     <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 5 5 9-10" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
     <symbol id="i-whats" viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.5-2-1-1 .8a5 5 0 0 1-2.3-2.3l.8-1-1-2L9 8.5Z" fill="currentColor"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 6 .5l3-3a4 4 0 0 0-5.7-5.7l-1.3 1.3M14 10a4 4 0 0 0-6-.5l-3 3a4 4 0 0 0 5.7 5.7l1.3-1.3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-calc" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 7h8M8 12h2M14 12h2M8 16h2M14 16h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="10" r="1.8" fill="currentColor"/><path d="m4 18 5-5 4 4 3-3 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4l2-2ZM10 20a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-insta" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.8 5.8 6.2.9-4.5 4.4 1 6.3L12 17.5 6.5 20.4l1-6.3L3 9.7l6.2-.9L12 3Z" fill="currentColor"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="m11 12 8-8M16 7l2 2M14 9l2 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
     <symbol id="logo-mark" viewBox="0 0 100 84">
       <path d="M6 34 Q50 -6 94 34" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
       <circle cx="47" cy="26" r="9.5" style="fill: var(--gold)"/>
       <text x="50" y="81" text-anchor="middle" font-family="Montserrat, 'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="54" letter-spacing="-2" fill="currentColor">VC</text>
     </symbol>
   </svg>
+  <!-- SPRITE:END -->
 
+  <!-- HEADER:START -->
   <header class="header" id="topo">
     <div class="container header__inner">
-      <a href="#topo" class="logo" aria-label="VC Imóveis — início">
+      <a href="/" class="logo" aria-label="VC Imóveis — início">
         <svg class="logo__mark" aria-hidden="true"><use href="#logo-mark"/></svg>
         <span class="logo__words"><span class="logo__name">IMÓVEIS</span><span class="logo__tag">Realizando sonhos</span></span>
       </a>
       <nav class="nav" id="nav" aria-label="Principal">
-        <a href="#imoveis" data-set-mode="comprar">Comprar</a>
-        <a href="#imoveis" data-set-mode="alugar">Alugar</a>
-        <a href="#contato">Contato</a>
+        <a href="/#imoveis" data-set-mode="comprar">Comprar</a>
+        <a href="/#imoveis" data-set-mode="alugar">Alugar</a>
+        <a href="/#sobre">Quem somos</a>
+        <a href="/#anunciar">Anunciar</a>
+        <a href="/#contato">Contato</a>
       </nav>
       <div class="header__actions">
         <button class="icon-btn" id="openFavs" aria-label="Abrir favoritos">
@@ -57,6 +79,7 @@
       </div>
     </div>
   </header>
+  <!-- HEADER:END -->
 
   <main>
     <section class="hero">
@@ -87,6 +110,17 @@
             </button>
           </div>
         </form>
+        <p class="hero__code">Viu um anúncio com código? <button type="button" class="link-btn" id="heroCodeBtn">Buscar pelo código</button></p>
+      </div>
+    </section>
+
+    <section class="featured" id="destaques" hidden>
+      <div class="container">
+        <div class="section-head">
+          <h2>Destaques da semana</h2>
+          <p class="muted">Selecionados pela nossa equipe.</p>
+        </div>
+        <div class="grid" id="featuredGrid"></div>
       </div>
     </section>
 
@@ -104,6 +138,11 @@
         </div>
 
         <div class="filterbar">
+          <label class="search-mini">
+            <svg><use href="#i-search"/></svg>
+            <span class="sr-only">Buscar por código, rua ou bairro</span>
+            <input id="fText" type="search" placeholder="Código, rua ou bairro" autocomplete="off" />
+          </label>
           <label class="select"><span class="sr-only">Bairro</span><select id="fHood"><option value="">Bairro</option></select></label>
           <label class="select"><span class="sr-only">Tipo</span><select id="fType"><option value="">Tipo</option></select></label>
           <label class="select"><span class="sr-only">Quartos</span>
@@ -130,7 +169,7 @@
             <div class="pills" id="fParking"></div>
           </div>
           <div class="more__group">
-            <span class="more__title">Comodidades</span>
+            <span class="more__title">Diferenciais</span>
             <div class="chips" id="fAmenities"></div>
           </div>
         </div>
@@ -143,46 +182,149 @@
 
         <div class="empty" id="empty" hidden>
           <h3>Nenhum imóvel com esses filtros</h3>
-          <p class="muted">Tente outro bairro ou remova algum filtro.</p>
-          <button class="btn btn--primary" id="emptyClear">Limpar filtros</button>
+          <p class="muted">Tente outro bairro ou remova algum filtro. Ou deixe seu pedido e avisamos quando aparecer.</p>
+          <div class="empty__actions">
+            <button class="btn btn--outline" id="emptyClear">Limpar filtros</button>
+            <button class="btn btn--primary" data-open-alert>Me avise quando aparecer</button>
+          </div>
         </div>
+      </div>
+    </section>
+
+    <section class="alert-band">
+      <div class="container alert-band__inner">
+        <span class="alert-band__icon"><svg><use href="#i-bell"/></svg></span>
+        <div>
+          <h2>Não achou o que procura?</h2>
+          <p>Conte o que você precisa e a gente avisa no seu WhatsApp assim que aparecer um imóvel assim.</p>
+        </div>
+        <button class="btn btn--dark" type="button" data-open-alert>Me avise quando aparecer</button>
+      </div>
+    </section>
+
+    <section class="about" id="sobre">
+      <div class="container">
+        <div class="about__grid">
+          <div>
+            <span class="eyebrow">Quem somos</span>
+            <h2>Gente da cidade cuidando do seu próximo endereço.</h2>
+            <p class="about__text" id="aboutText"></p>
+            <ul class="about__facts">
+              <li data-s-wrap><svg><use href="#i-key"/></svg><span>CRECI <b data-s="creci"></b></span></li>
+              <li data-s-wrap><svg><use href="#i-pin"/></svg><span data-s="address"></span></li>
+            </ul>
+          </div>
+          <div class="team" id="team" hidden></div>
+        </div>
+
+        <div class="reviews" id="reviews" hidden>
+          <div class="reviews__head">
+            <h3>O que dizem nossos clientes</h3>
+            <a class="link-btn" id="googleReviews" target="_blank" rel="noopener" hidden>Ver avaliações no Google</a>
+          </div>
+          <div class="reviews__list" id="reviewsList"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="owner" id="anunciar">
+      <div class="container owner__inner">
+        <div>
+          <span class="eyebrow eyebrow--dark">Para proprietários</span>
+          <h2>Quer vender ou alugar seu imóvel?</h2>
+          <ul class="ticks">
+            <li><svg><use href="#i-check"/></svg> Avaliação de preço sem custo</li>
+            <li><svg><use href="#i-check"/></svg> Fotos e anúncio no site e nas redes</li>
+            <li><svg><use href="#i-check"/></svg> Cuidamos das visitas, contrato e vistoria</li>
+          </ul>
+        </div>
+        <form class="owner__form" id="ownerForm" novalidate>
+          <h3>Fale com a gente</h3>
+          <div class="seg seg--light" role="radiogroup" aria-label="O que deseja">
+            <label><input type="radio" name="ownerMode" value="vender" checked /><span>Vender</span></label>
+            <label><input type="radio" name="ownerMode" value="alugar" /><span>Alugar</span></label>
+          </div>
+          <input class="input" name="nome" id="oName" required placeholder="Seu nome" autocomplete="name" maxlength="120" />
+          <input class="input" name="tel" id="oPhone" required type="tel" placeholder="WhatsApp com DDD" autocomplete="tel" data-mask="phone" />
+          <input class="input" name="imovel" id="oProp" placeholder="Tipo e bairro do imóvel (ex.: casa no Centro)" maxlength="200" />
+          <textarea class="input textarea" name="msg" id="oMsg" rows="3" placeholder="Algo mais que devemos saber? (opcional)" maxlength="800"></textarea>
+          <div id="ownerConsent"></div>
+          <button class="btn btn--dark btn--block" type="submit">Quero uma avaliação</button>
+        </form>
       </div>
     </section>
 
     <section class="contact" id="contato">
-      <div class="container contact__inner">
+      <div class="container contact__grid">
         <div>
-          <h2>Quer vender ou alugar seu imóvel?</h2>
-          <p>Fazemos a avaliação sem custo e cuidamos de tudo para você.</p>
+          <h2>Fale com a VC Imóveis</h2>
+          <p>Atendimento por WhatsApp, telefone ou no nosso escritório.</p>
+          <a class="btn btn--dark" data-s-whats="Olá! Vim pelo site da VC Imóveis." target="_blank" rel="noopener"><svg><use href="#i-whats"/></svg> Chamar no WhatsApp</a>
         </div>
-        <div class="contact__info">
-          <a class="btn btn--dark" target="_blank" rel="noopener" href="https://wa.me/5535000000000?text=Ol%C3%A1!%20Vim%20pelo%20site.">
-            <svg><use href="#i-whats"/></svg> Chamar no WhatsApp
-          </a>
-          <p>(35) 00000-0000 · Rua Principal, 100 – Centro, Brazópolis - MG<br />Seg a sex, 8h às 18h · Sáb, 8h às 12h</p>
-        </div>
+        <ul class="contact__list">
+          <li data-s-wrap><svg><use href="#i-phone"/></svg><a data-s-phone><span data-s="phone"></span></a></li>
+          <li data-s-wrap><svg><use href="#i-pin"/></svg><span data-s="address"></span></li>
+          <li data-s-wrap><svg><use href="#i-clock"/></svg><span data-s="hours"></span></li>
+          <li data-s-wrap><svg><use href="#i-search"/></svg><span data-s="email"></span></li>
+          <li><a data-s-insta target="_blank" rel="noopener" hidden><svg><use href="#i-insta"/></svg><span data-insta-label></span></a></li>
+        </ul>
       </div>
     </section>
   </main>
 
+  <!-- FOOTER:START -->
   <footer class="footer">
     <div class="container footer__inner">
-      <a href="#topo" class="logo logo--light" aria-label="VC Imóveis — voltar ao topo">
+      <a href="/" class="logo logo--light" aria-label="VC Imóveis — início">
         <svg class="logo__mark" aria-hidden="true"><use href="#logo-mark"/></svg>
         <span class="logo__words"><span class="logo__name">IMÓVEIS</span><span class="logo__tag">Realizando sonhos</span></span>
       </a>
       <div class="footer__links">
-        <span>© <span id="year"></span> VC Imóveis · Brazópolis - MG · CRECI 00000-J</span>
-        <a href="admin.html">Área da equipe</a>
+        <span>© <span id="year"></span> VC Imóveis · Brazópolis - MG · CRECI <span data-s="creci"></span></span>
+        <a href="/privacidade.html">Privacidade</a>
+        <a href="/admin.html" rel="nofollow">Área da equipe</a>
       </div>
     </div>
   </footer>
+
+  <a class="whats-float" data-s-whats="Olá! Vim pelo site da VC Imóveis." target="_blank" rel="noopener" aria-label="Conversar no WhatsApp">
+    <svg><use href="#i-whats"/></svg>
+  </a>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <!-- FOOTER:END -->
 
   <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle" hidden>
     <div class="modal__backdrop" data-close></div>
     <div class="modal__panel" tabindex="-1">
       <button class="icon-btn modal__close" data-close aria-label="Fechar"><svg><use href="#i-close"/></svg></button>
       <div class="modal__content" id="modalContent"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="alertModal" role="dialog" aria-modal="true" aria-labelledby="alertTitle" hidden>
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__panel modal__panel--sm" tabindex="-1">
+      <button class="icon-btn modal__close" data-close aria-label="Fechar"><svg><use href="#i-close"/></svg></button>
+      <div class="modal__content">
+        <form class="alert-form" id="alertForm" novalidate>
+          <h2 id="alertTitle">Me avise quando aparecer</h2>
+          <p class="muted">Diga o que procura. Quando entrar um imóvel assim, a equipe te chama no WhatsApp.</p>
+          <div class="seg seg--light" role="radiogroup" aria-label="Negócio">
+            <label><input type="radio" name="aMode" value="alugar" checked /><span>Alugar</span></label>
+            <label><input type="radio" name="aMode" value="comprar" /><span>Comprar</span></label>
+          </div>
+          <div class="alert-form__grid">
+            <label><span class="lbl">Tipo</span><select class="input" id="aType"><option value="">Tanto faz</option></select></label>
+            <label><span class="lbl">Bairro</span><select class="input" id="aHood"><option value="">Tanto faz</option></select></label>
+            <label><span class="lbl">Quartos</span><select class="input" id="aBeds"><option value="0">Tanto faz</option><option value="1">1 ou mais</option><option value="2">2 ou mais</option><option value="3">3 ou mais</option></select></label>
+            <label><span class="lbl" id="aPriceLbl">Até quanto por mês</span><input class="input" id="aPrice" inputmode="numeric" placeholder="R$ 0" /></label>
+          </div>
+          <input class="input" id="aName" required placeholder="Seu nome" autocomplete="name" maxlength="120" />
+          <input class="input" id="aPhone" required type="tel" placeholder="WhatsApp com DDD" autocomplete="tel" data-mask="phone" />
+          <div id="alertConsent"></div>
+          <button class="btn btn--primary btn--block" type="submit">Quero ser avisado</button>
+        </form>
+      </div>
     </div>
   </div>
 
@@ -197,16 +339,11 @@
     </div>
   </div>
 
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-
-  <a class="whats-float" href="https://wa.me/5535000000000?text=Ol%C3%A1!%20Vim%20pelo%20site." target="_blank" rel="noopener" aria-label="Conversar no WhatsApp">
-    <svg><use href="#i-whats"/></svg>
-  </a>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-  <script src="js/config.js"></script>
-  <script src="js/data.js"></script>
-  <script src="js/store.js"></script>
-  <script src="js/app.js"></script>
+  <script src="/js/config.js"></script>
+  <script src="/js/data.js"></script>
+  <script src="/js/store.js"></script>
+  <script src="/js/site.js"></script>
+  <script src="/js/app.js"></script>
 </body>
 </html>

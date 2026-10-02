@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#2b2c2e"/>
+  <path d="M10 27 Q32 6 54 27" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/>
+  <circle cx="30.5" cy="22" r="5.2" fill="#eec136"/>
+  <text x="32" y="55" text-anchor="middle" font-family="Montserrat, Arial Black, Arial, sans-serif" font-weight="900" font-size="28" fill="#fff" letter-spacing="-1">VC</text>
+</svg>

@@ -288,59 +288,9 @@ window.Contracts = (() => {
     return m;
   }
 
-  // ---------- Exportação ----------
-  const DOC_CSS = `
-    body { font-family: Arial, Helvetica, sans-serif; font-size: 11pt; line-height: 1.5; color: #000; }
-    h1 { font-size: 14pt; text-align: center; margin: 0 0 18pt; }
-    h3 { font-size: 11pt; text-align: center; margin: 16pt 0 8pt; }
-    p { text-align: justify; margin: 0 0 8pt; }
-    p.date { margin-top: 18pt; }
-    .signs { margin-top: 36pt; }
-    .sign { text-align: center; margin: 0 auto 30pt; width: 300pt; page-break-inside: avoid; }
-    .sign__line { border-top: 1px solid #000; margin-bottom: 4pt; height: 1pt; }
-    .ph { background: #ffef9a; }
-  `;
-
-  function fileBase() {
-    const who = state.locatario.nome.trim() || "locatario";
-    return `Contrato de locação - ${who}`.replace(/[\\/:*?"<>|]/g, "");
-  }
-
-  function downloadWord() {
-    const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
-<head><meta charset="utf-8"><title>${esc(fileBase())}</title>
-<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom></w:WordDocument></xml><![endif]-->
-<style>@page { size: 21cm 29.7cm; margin: 2.5cm 2.5cm 2.5cm 3cm; } ${DOC_CSS}</style></head>
-<body>${build(state)}</body></html>`;
-    const blob = new Blob(["﻿", html], { type: "application/msword" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `${fileBase()}.doc`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
-  }
-
-  function printPDF() {
-    const area = $("#ctPrint");
-    area.innerHTML = build(state);
-    const prevTitle = document.title;
-    document.title = fileBase();
-    document.body.classList.add("is-printing");
-    const done = () => {
-      document.body.classList.remove("is-printing");
-      document.title = prevTitle;
-      area.innerHTML = "";
-      window.removeEventListener("afterprint", done);
-    };
-    window.addEventListener("afterprint", done);
-    window.print();
-  }
-
-  // ---------- UI ----------
-  let toast = () => {};
-  let confirmBox = async () => true;
+  // ---------- UI (o módulo Documentos cuida de exportar, limpar e trocar de documento) ----------
+  let active = true;
+  let propertyId = null;
 
   function readForm() {
     $$("#ctForm [data-f]").forEach((el) => {
@@ -372,6 +322,7 @@ window.Contracts = (() => {
   }
 
   function renderPreview() {
+    if (!active) return;
     $("#ctDoc").innerHTML = build(state);
     const m = missing(state);
     const box = $("#ctMissing");
@@ -390,33 +341,46 @@ window.Contracts = (() => {
     const city = typeof CITY !== "undefined" ? CITY.replace(" - ", "/") : "Brazópolis/MG";
     state.imovel = [p.street, `bairro ${p.neighborhood}`, `na cidade de ${city}`].filter(Boolean).join(", ");
     state.aluguel = Number(p.price) || 0;
+    propertyId = p.id;
     writeForm();
     renderPreview();
   }
 
-  async function clearAll(ask = true) {
-    if (ask && hasData() && !(await confirmBox("Apagar todos os dados preenchidos neste contrato?", "Apagar"))) return;
+  function reset() {
     state = blank();
+    propertyId = null;
     writeForm();
     renderPreview();
   }
 
-  async function exportWith(fn) {
+  function fileBase() {
+    const who = state.locatario.nome.trim() || "locatario";
+    return `Contrato de locação - ${who}`;
+  }
+
+  /** Dados básicos para registrar a locação (sem CPF/RG). */
+  function rentalDraft() {
     readForm();
-    const m = missing(state);
-    if (m.length && !(await confirmBox(`O contrato ainda tem campos em branco (${m.length === 1 ? "1 grupo" : m.length + " grupos"}). Eles vão sair marcados em amarelo. Baixar mesmo assim?`, "Baixar assim"))) return;
-    fn();
+    const p = propertyId ? getRentals().find((x) => x.id === propertyId) : null;
+    return {
+      property: p || undefined,
+      property_label: p ? undefined : state.imovel,
+      tenant_name: state.locatario.nome,
+      owner_name: state.locador.nome,
+      rent: state.aluguel,
+      due_day: Number(state.vencimento) || "",
+      index_name: state.indice,
+      start_date: state.inicio,
+      months: Number(state.prazo) || 30,
+    };
   }
 
   function init(opts) {
     getRentals = opts.getRentals;
-    toast = opts.toast || toast;
-    confirmBox = opts.confirmBox || confirmBox;
 
     $("#ctParties").innerHTML = PARTIES.map(partyFieldsHTML).join("");
     $("#ct-indice").innerHTML = Object.keys(INDEXES).map((k) => `<option value="${k}">${k}</option>`).join("");
     writeForm();
-    renderPreview();
 
     const form = $("#ctForm");
     form.addEventListener("input", (e) => {
@@ -432,21 +396,20 @@ window.Contracts = (() => {
       renderPreview();
     });
     form.addEventListener("submit", (e) => e.preventDefault());
-
-    $("#ctWord").addEventListener("click", () => exportWith(downloadWord));
-    $("#ctPdf").addEventListener("click", () => exportWith(printPDF));
-    $("#ctClear").addEventListener("click", () => clearAll(true));
-    $("#ctShowPreview").addEventListener("click", () => $("#ctPreviewWrap").scrollIntoView({ behavior: "smooth" }));
-
-    window.addEventListener("beforeunload", (e) => {
-      if (hasData()) { e.preventDefault(); e.returnValue = ""; }
-    });
   }
 
-  function open(p) {
-    fillRentals();
-    if (p) applyProperty(p);
-  }
-
-  return { init, open, clear: () => clearAll(false), _test: { intWords, moneyWords, cpfValid, build, blank } };
+  return {
+    init,
+    fillRentals,
+    applyProperty,
+    reset,
+    hasData,
+    fileBase,
+    rentalDraft,
+    setActive(on) { active = on; if (on) renderPreview(); },
+    build: () => { readForm(); return build(state); },
+    missing: () => { readForm(); return missing(state); },
+    helpers: { intWords, moneyWords, cpfValid, cpfMask, parseDate, dateWords, money, isoToday, CIVIL },
+    _test: { intWords, moneyWords, cpfValid, build, blank },
+  };
 })();

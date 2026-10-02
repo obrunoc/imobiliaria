@@ -9,6 +9,13 @@
   const digits = (s) => String(s || "").replace(/\D/g, "");
   const norm = (s) => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
   const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+  const propUrl = (p) => (["localhost", "127.0.0.1"].includes(location.hostname) ? `${location.origin}/imovel.html?cod=${p.code}` : `${location.origin}/imovel/${p.code}`);
+  /** Link de WhatsApp para falar com um cliente (acrescenta 55 se faltar). */
+  const waTo = (phone, text) => {
+    let d = digits(phone);
+    if (d.length === 10 || d.length === 11) d = `55${d}`;
+    return `https://wa.me/${d}${text ? `?text=${encodeURIComponent(text)}` : ""}`;
+  };
 
   const STATUS = {
     disponivel: "Disponível",
@@ -31,16 +38,21 @@
   ];
 
   let items = [];
+  let user = null;
   const view = { status: "", q: "", mode: "" };
+  const isAdmin = () => user?.role === "admin";
 
-  // ---------- Toast e confirmação ----------
+  // ---------- Toast (com ação opcional) e confirmação ----------
   let toastTimer;
-  function toast(text, ms = 2600) {
+  function toast(text, ms = 2800, action) {
     const t = $("#toast");
-    t.textContent = text;
+    $("#toastText").textContent = text;
+    const btn = $("#toastAction");
+    btn.hidden = !action;
+    if (action) { btn.textContent = action.label; btn.onclick = () => { t.classList.remove("is-visible"); action.onClick(); }; }
     t.classList.add("is-visible");
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => t.classList.remove("is-visible"), ms);
+    toastTimer = setTimeout(() => t.classList.remove("is-visible"), action ? Math.max(ms, 7000) : ms);
   }
 
   function confirmBox(text, yesLabel = "Confirmar") {
@@ -63,13 +75,23 @@
     });
   }
 
+  // Contexto compartilhado com os módulos (clientes, locações, documentos, site, arte)
+  const ui = {
+    $, $$, brl, esc, icon, digits, norm, plural, toast, confirmBox, waTo, propUrl, STATUS,
+    get items() { return items; },
+    get user() { return user; },
+    isAdmin,
+    setView: (name, arg) => setView(name, arg),
+  };
+  window.AdminUI = ui;
+
   // ---------- Login ----------
   async function boot() {
     $("#demoNote").hidden = Store.isLive;
     $("#demoBanner").hidden = Store.isLive;
     $("#maxVideo").textContent = Store.MAX_VIDEO_MB;
-    const user = await Store.auth.user();
-    user ? showApp(user) : showLogin();
+    const u = await Store.auth.user();
+    u ? showApp(u) : showLogin();
   }
 
   function showLogin() {
@@ -78,11 +100,16 @@
     $("#loginEmail").focus();
   }
 
-  async function showApp(user) {
+  async function showApp(u) {
+    user = u;
     $("#loginView").hidden = true;
     $("#appView").hidden = false;
-    $("#userEmail").textContent = user.email;
+    $("#userEmail").textContent = `${u.email} · ${u.role === "admin" ? "dono" : "corretor"}`;
+    $$("[data-admin-only]").forEach((el) => (el.hidden = !isAdmin()));
+    setView("imoveis");
     await refresh();
+    Leads.refresh();
+    Rentals.refresh();
   }
 
   $("#loginForm").addEventListener("submit", async (e) => {
@@ -94,10 +121,10 @@
     $("#loginBtn").disabled = true;
     $("#loginBtn").textContent = "Entrando…";
     try {
-      const user = await Store.auth.signIn(email, pass);
+      const u = await Store.auth.signIn(email, pass);
       err.hidden = true;
       $("#loginPass").value = "";
-      await showApp(user);
+      await showApp(u);
     } catch (ex) {
       err.textContent = ex.message || "Não foi possível entrar. Tente de novo.";
       err.hidden = false;
@@ -108,20 +135,39 @@
   });
 
   $("#fillDemo").addEventListener("click", () => {
-    $("#loginEmail").value = Store.DEMO_USER.email;
-    $("#loginPass").value = Store.DEMO_USER.password;
+    const u = Store.DEMO_USERS[0];
+    $("#loginEmail").value = u.email;
+    $("#loginPass").value = u.password;
     $("#loginBtn").focus();
   });
 
   $("#logoutBtn").addEventListener("click", async () => {
-    Contracts.clear();
-    setView("imoveis");
+    Docs.clearAll();
     await Store.auth.signOut();
     items = [];
+    user = null;
     showLogin();
   });
 
-  // ---------- Lista ----------
+  // ---------- Abas ----------
+  const VIEWS = { imoveis: "#viewImoveis", clientes: "#viewClientes", locacoes: "#viewLocacoes", docs: "#viewDocs", site: "#viewSite" };
+  function setView(name, arg) {
+    if (name === "site" && !isAdmin()) name = "imoveis";
+    Object.entries(VIEWS).forEach(([k, sel]) => ($(sel).hidden = k !== name));
+    $$("[data-view]").forEach((b) => {
+      const on = b.dataset.view === name;
+      b.classList.toggle("is-active", on);
+      if (on) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
+    });
+    if (name === "clientes") Leads.show(arg);
+    if (name === "locacoes") Rentals.show(arg);
+    if (name === "docs") Docs.open(arg);
+    if (name === "site") SiteSettings.show();
+    window.scrollTo(0, 0);
+  }
+  $$("[data-view]").forEach((b) => b.addEventListener("click", () => setView(b.dataset.view)));
+
+  // ---------- Lista de imóveis ----------
   async function refresh() {
     $("#feed").innerHTML = `<p class="muted">Carregando…</p>`;
     try {
@@ -140,8 +186,9 @@
       <button type="button" role="tab" class="status-tab ${view.status === t.key ? "is-active" : ""}" aria-selected="${view.status === t.key}" data-tab="${t.key}">
         ${t.label} <b>${count(t.key)}</b>
       </button>`).join("");
-    const live = items.filter((p) => p.status === "disponivel" || p.status === "reservado").length;
-    $("#summary").textContent = `${plural(live, "imóvel aparecendo", "imóveis aparecendo")} no site · ${plural(items.length, "cadastrado", "cadastrados")} no total`;
+    const live = items.filter((p) => Store.PUBLIC_STATUS.includes(p.status));
+    const views = live.reduce((s, p) => s + (p.views || 0), 0);
+    $("#summary").textContent = `${plural(live.length, "imóvel aparecendo", "imóveis aparecendo")} no site · ${plural(items.length, "cadastrado", "cadastrados")} · ${views.toLocaleString("pt-BR")} visualizações`;
   }
 
   function visibleItems() {
@@ -158,23 +205,31 @@
     const videos = p.media.filter((m) => m.type === "video").length;
     const extras = [photos && plural(photos, "foto", "fotos"), videos && plural(videos, "vídeo", "vídeos")].filter(Boolean).join(" · ") || "Sem fotos";
     const faded = ["alugado", "vendido", "oculto"].includes(p.status);
+    const isPublic = Store.PUBLIC_STATUS.includes(p.status);
     const options = STATUS_BY_MODE[p.mode].map((s) => `<option value="${s}" ${s === p.status ? "selected" : ""}>${STATUS[s]}</option>`).join("");
+    const drop = Number(p.old_price) > Number(p.price);
     return `
       <article class="row ${faded ? "is-faded" : ""}" data-id="${esc(p.id)}">
         ${img ? `<img class="row__thumb" src="${esc(img.src)}" alt="" data-edit loading="lazy" />` : `<div class="row__thumb" data-edit>${icon("image")}</div>`}
         <div class="row__info" data-edit>
-          <div class="row__meta"><span class="mode-tag">${p.mode === "alugar" ? "Aluguel" : "Venda"}</span><span>Cód. ${esc(p.code)}</span></div>
+          <div class="row__meta">
+            <span class="mode-tag">${p.mode === "alugar" ? "Aluguel" : "Venda"}</span><span>Cód. ${esc(p.code)}</span>
+            ${p.featured ? `<span class="feat-tag">${icon("star")} Destaque</span>` : ""}
+          </div>
           <span class="row__title">${esc(p.type)} · ${esc(p.neighborhood)}</span>
-          <span class="row__sub">${p.street ? `${esc(p.street)} · ` : ""}${extras}</span>
+          <span class="row__sub">${p.street ? `${esc(p.street)} · ` : ""}${extras} · ${icon("eye")} ${(p.views || 0).toLocaleString("pt-BR")}</span>
         </div>
-        <div class="row__price">${brl(p.price)}${p.mode === "alugar" ? "<small>/mês</small>" : ""}</div>
+        <div class="row__price">${brl(p.price)}${p.mode === "alugar" ? "<small>/mês</small>" : ""}${drop ? `<span class="row__drop">baixou de ${brl(p.old_price)}</span>` : ""}</div>
         <label class="row__status"><span class="sr-only">Situação</span>
           <select class="status-select st-${p.status}" data-status>${options}</select>
         </label>
         <div class="row__actions">
+          <button class="icon-btn ${p.featured ? "is-on" : ""}" data-feat aria-pressed="${Boolean(p.featured)}" aria-label="${p.featured ? "Tirar dos destaques" : "Colocar nos destaques"}" title="${p.featured ? "Tirar dos destaques" : "Colocar nos destaques"}">${icon(p.featured ? "star" : "star-o")}</button>
+          ${isPublic ? `<button class="icon-btn" data-link aria-label="Copiar link do anúncio" title="Copiar link do anúncio">${icon("link")}</button>` : ""}
+          <button class="icon-btn" data-art aria-label="Gerar arte para Instagram" title="Arte para Instagram">${icon("palette")}</button>
           ${p.mode === "alugar" ? `<button class="icon-btn" data-contract aria-label="Gerar contrato de locação" title="Gerar contrato">${icon("doc")}</button>` : ""}
           <button class="icon-btn" data-edit aria-label="Editar" title="Editar">${icon("edit")}</button>
-          <button class="icon-btn" data-del aria-label="Excluir" title="Excluir">${icon("trash")}</button>
+          ${isAdmin() ? `<button class="icon-btn" data-del aria-label="Excluir" title="Excluir">${icon("trash")}</button>` : ""}
         </div>
       </article>`;
   }
@@ -211,6 +266,10 @@
     try {
       await Store.setStatus(p.id, p.status);
       toast(`Cód. ${p.code} agora está como ${STATUS[p.status].toLowerCase()}.`);
+      if (p.status === "alugado") {
+        toast(`Cód. ${p.code} alugado. Quer registrar a locação para acompanhar vencimentos e reajustes?`, 7000,
+          { label: "Registrar", onClick: () => { setView("locacoes"); Rentals.openNew({ property: p }); } });
+      }
     } catch (ex) {
       console.error(ex);
       p.status = prev;
@@ -221,15 +280,33 @@
 
   document.addEventListener("click", async (e) => {
     if (e.target.closest("[data-new]") || e.target.closest("#newBtn")) { openEditor(null); return; }
-    const row = e.target.closest(".row");
+    const row = e.target.closest("#feed .row");
     if (!row) return;
     const p = items.find((x) => String(x.id) === row.dataset.id);
     if (e.target.closest("[data-del]")) { await deleteProp(p); return; }
-    if (e.target.closest("[data-contract]")) { setView("contratos", p); return; }
+    if (e.target.closest("[data-contract]")) { setView("docs", p); return; }
+    if (e.target.closest("[data-art]")) { Art.open(p); return; }
+    if (e.target.closest("[data-link]")) {
+      const url = propUrl(p);
+      try { await navigator.clipboard.writeText(url); toast("Link do anúncio copiado. Cole no WhatsApp ou Instagram."); }
+      catch { prompt("Copie o link do anúncio:", url); }
+      return;
+    }
+    if (e.target.closest("[data-feat]")) {
+      const on = !p.featured;
+      p.featured = on;
+      renderFeed();
+      try {
+        await Store.patchProperty(p.id, { featured: on });
+        toast(on ? `Cód. ${p.code} entrou nos destaques da página inicial.` : `Cód. ${p.code} saiu dos destaques.`);
+      } catch (ex) { console.error(ex); p.featured = !on; renderFeed(); toast("Não foi possível alterar o destaque."); }
+      return;
+    }
     if (e.target.closest("[data-edit]")) openEditor(p);
   });
 
   async function deleteProp(p) {
+    if (!isAdmin()) { toast("Só o dono pode excluir imóveis. Você pode marcar como Oculto."); return false; }
     const ok = await confirmBox(`Excluir o imóvel cód. ${p.code} (${p.type} · ${p.neighborhood})? As fotos e vídeos também serão apagados. Isso não pode ser desfeito.`, "Excluir");
     if (!ok) return false;
     try {
@@ -245,7 +322,7 @@
     }
   }
 
-  // ---------- Editor ----------
+  // ---------- Editor de imóvel ----------
   const ed = { prop: null, media: [], removed: [], dirty: false, saving: false };
 
   function fillStaticEditor() {
@@ -279,6 +356,7 @@
     $("#editorTitle").textContent = p ? `Editar imóvel · Cód. ${p.code}` : "Novo imóvel";
     $$('input[name="mode"]').forEach((r) => (r.checked = r.value === d.mode));
     setStatusOptions(d.mode, d.status);
+    $("#eFeatured").checked = Boolean(d.featured);
     $("#eType").value = d.type;
     if ($("#eType").value !== d.type) { $("#eType").insertAdjacentHTML("beforeend", `<option>${esc(d.type)}</option>`); $("#eType").value = d.type; }
     $("#eHood").value = d.neighborhood || "";
@@ -293,13 +371,16 @@
     const hoods = [...new Set([...NEIGHBORHOODS, ...items.map((x) => x.neighborhood)])].sort((a, b) => a.localeCompare(b, "pt-BR"));
     $("#hoodList").innerHTML = hoods.map((h) => `<option value="${esc(h)}">`).join("");
     $$(".is-invalid", $("#editForm")).forEach((el) => el.classList.remove("is-invalid"));
-    $("#deleteBtn").hidden = !p;
+    $("#deleteBtn").hidden = !p || !isAdmin();
     $("#progress").hidden = true;
+    $("#priceHint").textContent = p && Number(p.old_price) > Number(p.price)
+      ? `Selo "Baixou o preço" ativo (antes ${brl(p.old_price)}). Se subir o preço de novo para esse valor ou mais, o selo sai.`
+      : `Se você baixar o preço, o site mostra o selo "Baixou o preço" automaticamente.`;
     renderMedia();
 
     $("#editor").hidden = false;
     document.body.classList.add("no-scroll");
-    $(".editor__body").scrollTop = 0;
+    $("#editor .editor__body").scrollTop = 0;
     (p ? $("#eHood") : $("#dropzone")).focus?.();
   }
 
@@ -368,14 +449,19 @@
     renderMedia();
   });
 
-  $("#editForm").addEventListener("input", (e) => {
-    ed.dirty = true;
-    e.target.classList?.remove("is-invalid");
-    if (e.target.matches("[data-money]")) {
-      const d = digits(e.target.value);
-      e.target.value = d ? brl(+d) : "";
+  // Máscaras de dinheiro e telefone (todas as telas do painel)
+  document.addEventListener("input", (e) => {
+    if (e.target.matches?.("[data-money]")) { const d = digits(e.target.value); e.target.value = d ? brl(+d) : ""; }
+    if (e.target.dataset?.mask === "phone") {
+      const d = digits(e.target.value).slice(0, 11);
+      let out = d;
+      if (d.length > 2) out = `(${d.slice(0, 2)}) ${d.slice(2)}`;
+      if (d.length > 7) out = `(${d.slice(0, 2)}) ${d.slice(2, d.length - 4)}-${d.slice(-4)}`;
+      e.target.value = out;
     }
   });
+
+  $("#editForm").addEventListener("input", (e) => { ed.dirty = true; e.target.classList?.remove("is-invalid"); });
   $("#editForm").addEventListener("change", (e) => {
     ed.dirty = true;
     if (e.target.name === "mode") setStatusOptions(e.target.value, $("#eStatus").value);
@@ -392,24 +478,39 @@
   $("#eAmenityNew").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); $("#addAmenity").click(); } });
 
   $$("[data-editor-close]").forEach((b) => b.addEventListener("click", () => closeEditor()));
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("#editor").hidden && $("#confirm").hidden) closeEditor(); });
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape" || !$("#confirm").hidden) return;
+    if (!$("#editor").hidden) closeEditor();
+  });
 
   $("#deleteBtn").addEventListener("click", async () => {
     if (await deleteProp(ed.prop)) closeEditor(true);
   });
 
+  /** Selo "Baixou o preço": guarda o preço anterior quando o novo é menor. */
+  function computeOldPrice(prev, newPrice) {
+    if (!prev) return null;
+    const before = Number(prev.price), old = Number(prev.old_price) || 0;
+    if (newPrice < before) return Math.max(before, old);
+    if (old && newPrice < old) return old;
+    return null;
+  }
+
   $("#editForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     if (ed.saving) return;
     const mode = $('input[name="mode"]:checked').value;
+    const price = moneyOut($("#ePrice"));
     const data = {
       id: ed.prop?.id,
       mode,
       status: $("#eStatus").value,
+      featured: $("#eFeatured").checked,
       type: $("#eType").value,
       neighborhood: $("#eHood").value.trim(),
       street: $("#eStreet").value.trim(),
-      price: moneyOut($("#ePrice")),
+      price,
+      old_price: ed.prop && ed.prop.mode === mode ? computeOldPrice(ed.prop, price) : null,
       condo: moneyOut($("#eCondo")),
       iptu: moneyOut($("#eIptu")),
       area: Number($("#eArea").value) || 0,
@@ -449,7 +550,14 @@
       ed.saving = false;
       closeEditor(true);
       renderFeed();
-      toast(data.id ? `Imóvel cód. ${saved.code} atualizado.` : `Imóvel cód. ${saved.code} cadastrado${["disponivel", "reservado"].includes(saved.status) ? " e já aparece no site" : ""}.`, 3500);
+      const msg = data.id ? `Imóvel cód. ${saved.code} atualizado.` : `Imóvel cód. ${saved.code} cadastrado${Store.PUBLIC_STATUS.includes(saved.status) ? " e já aparece no site" : ""}.`;
+      const waiting = Leads.matchesFor(saved);
+      if (waiting.length) {
+        toast(`${msg} ${plural(waiting.length, "cliente pediu", "clientes pediram")} para ser avisado de um imóvel assim.`, 9000,
+          { label: "Ver clientes", onClick: () => setView("clientes", { matchFor: saved }) });
+      } else {
+        toast(msg, 3500);
+      }
     } catch (ex) {
       console.error(ex);
       toast(ex.message && !/fetch|network/i.test(ex.message) ? ex.message : "Não foi possível salvar. Verifique a internet e tente de novo.", 4500);
@@ -461,21 +569,12 @@
     }
   });
 
-  // ---------- Abas do painel ----------
-  function setView(name, prop) {
-    $("#viewImoveis").hidden = name !== "imoveis";
-    $("#viewContratos").hidden = name !== "contratos";
-    $$("[data-view]").forEach((b) => {
-      const on = b.dataset.view === name;
-      b.classList.toggle("is-active", on);
-      if (on) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
-    });
-    if (name === "contratos") Contracts.open(prop);
-    window.scrollTo(0, 0);
-  }
-  $$("[data-view]").forEach((b) => b.addEventListener("click", () => setView(b.dataset.view)));
-
-  Contracts.init({ getRentals: () => items.filter((p) => p.mode === "alugar"), toast, confirmBox });
+  // ---------- Início ----------
+  Leads.init(ui);
+  Rentals.init(ui);
+  Docs.init(ui);
+  SiteSettings.init(ui);
+  Art.init(ui);
   fillStaticEditor();
   boot();
 })();
