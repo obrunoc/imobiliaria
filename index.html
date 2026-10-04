@@ -16,13 +16,34 @@
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="preload" href="/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="/fonts/montserrat-logo.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="/css/styles.css?v=20261003b" />
-  <script defer src="/js/config.js?v=20261003b"></script>
-  <script defer src="/js/data.js?v=20261003b"></script>
-  <script defer src="/js/utils.js?v=20261003b"></script>
-  <script defer src="/js/store.js?v=20261003b"></script>
-  <script defer src="/js/site.js?v=20261003b"></script>
-  <script defer src="/js/app.js?v=20261003b"></script>
+  <link rel="stylesheet" href="/css/styles.css?v=20261004a" />
+  <script defer src="/js/config.js?v=20261004a"></script>
+  <script defer src="/js/data.js?v=20261004a"></script>
+  <script defer src="/js/utils.js?v=20261004a"></script>
+  <script defer src="/js/store.js?v=20261004a"></script>
+  <script defer src="/js/site.js?v=20261004a"></script>
+  <script defer src="/js/app.js?v=20261004a"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "RealEstateAgent",
+    "name": "VC Imóveis",
+    "slogan": "Realizando sonhos",
+    "url": "https://vc-imoveis.vercel.app/",
+    "logo": "https://vc-imoveis.vercel.app/img/icon-512.png",
+    "image": "https://vc-imoveis.vercel.app/img/og-image.png",
+    "telephone": "+55-35-99937-4218",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "R. Sebastião Tobias da Rosa, 13 - Horizonte Azul",
+      "addressLocality": "Brazópolis",
+      "addressRegion": "MG",
+      "postalCode": "37530-000",
+      "addressCountry": "BR"
+    },
+    "areaServed": "Brazópolis - MG"
+  }
+  </script>
 </head>
 <body>
   <!-- SPRITE:START -->
@@ -268,7 +289,7 @@
         </div>
         <ul class="contact__list">
           <li data-s-wrap><svg><use href="#i-phone"/></svg><a data-s-phone><span data-s="phone"></span></a></li>
-          <li data-s-wrap><svg><use href="#i-pin"/></svg><span data-s="address"></span></li>
+          <li data-s-wrap><svg><use href="#i-pin"/></svg><span><span data-s="address"></span> · <a data-s-maps target="_blank" rel="noopener" class="contact__map">Como chegar</a></span></li>
           <li data-s-wrap><svg><use href="#i-clock"/></svg><span data-s="hours"></span></li>
           <li data-s-wrap><svg><use href="#i-search"/></svg><span data-s="email"></span></li>
           <li><a data-s-insta target="_blank" rel="noopener" hidden><svg><use href="#i-insta"/></svg><span data-insta-label></span></a></li>

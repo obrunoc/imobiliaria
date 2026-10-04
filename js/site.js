@@ -54,6 +54,7 @@ window.Site = (() => {
     });
     $$("[data-s-whats]").forEach((a) => { a.href = wa(a.dataset.sWhats || "Olá! Vim pelo site da VC Imóveis."); });
     $$("[data-s-phone]").forEach((a) => { a.href = `tel:+55${digits(s.phone)}`; });
+    $$("[data-s-maps]").forEach((a) => { a.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`VC Imóveis, ${s.address || ""}`)}`; });
     $$("[data-s-insta]").forEach((a) => {
       const handle = String(s.instagram || "").replace(/^@/, "").replace(/^https?:\/\/(www\.)?instagram\.com\//, "").replace(/\/$/, "");
       a.hidden = !handle;

@@ -35,11 +35,11 @@ const AMENITIES = ["Aceita pet", "Mobiliado", "Quintal", "Churrasqueira", "Pisci
 
 // Dados do site editáveis no painel (aba "Site"). Estes são os valores iniciais.
 window.DEFAULT_SETTINGS = {
-  whatsapp: "5535000000000",
-  phone: "(35) 00000-0000",
+  whatsapp: "5535999374218",
+  phone: "(35) 99937-4218",
   email: "",
-  address: "Rua Principal, 100 – Centro, Brazópolis - MG",
-  hours: "Seg a sex, 8h às 18h · Sáb, 8h às 12h",
+  address: "R. Sebastião Tobias da Rosa, 13 – Horizonte Azul, Brazópolis - MG, 37530-000",
+  hours: "Abre de segunda-feira às 9h",
   creci: "00000-J",
   instagram: "",
   googleReviewsUrl: "",

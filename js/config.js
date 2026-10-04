@@ -11,5 +11,5 @@ window.VC_CONFIG = {
   supabaseUrl: "",
   supabaseAnonKey: "",
 
-  whatsapp: "5535000000000", // DDI + DDD + número, só dígitos
+  whatsapp: "5535999374218", // DDI + DDD + número, só dígitos
 };
