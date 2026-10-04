@@ -25,10 +25,14 @@ on conflict (email) do update set role = excluded.role;
 alter table public.staff enable row level security;
 -- Sem políticas: ninguém lê ou altera a lista pelo site. Ela é mantida aqui no Supabase.
 
+-- O papel vem do usuário logado (auth.uid) com e-mail confirmado que está na lista da equipe.
 create or replace function public.my_role()
-returns text language sql stable security definer set search_path = public as $$
-  select role from public.staff
-  where lower(email) = lower(coalesce(auth.jwt() ->> 'email', ''));
+returns text language sql stable security definer set search_path = public, auth as $$
+  select s.role
+  from public.staff s
+  join auth.users u on lower(u.email) = lower(s.email)
+  where u.id = auth.uid() and u.email_confirmed_at is not null
+  limit 1;
 $$;
 
 create or replace function public.is_staff()
@@ -131,6 +135,33 @@ create table if not exists public.leads (
   consent       boolean not null default false check (consent)
 );
 
+-- Proteções dos pedidos enviados pelo site:
+-- - data, situação e anotações são sempre definidas pelo banco (o visitante não consegue forjar);
+-- - no máximo 5 pedidos por telefone por hora e 100 pedidos no total a cada 10 minutos.
+create or replace function public.leads_guard()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  new.created_at := now();
+  new.status := 'novo';
+  new.notes := '';
+  if new.criteria is not null and jsonb_typeof(new.criteria) <> 'object' then
+    raise exception 'Pedido inválido.';
+  end if;
+  if (select count(*) from public.leads
+      where phone = new.phone and created_at > now() - interval '1 hour') >= 5 then
+    raise exception 'Recebemos vários pedidos deste telefone. Tente de novo mais tarde ou chame no WhatsApp.';
+  end if;
+  if (select count(*) from public.leads where created_at > now() - interval '10 minutes') >= 100 then
+    raise exception 'Muitos pedidos no momento. Tente de novo em alguns minutos.';
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists leads_guard on public.leads;
+create trigger leads_guard before insert on public.leads
+  for each row execute function public.leads_guard();
+
 alter table public.leads enable row level security;
 
 -- O visitante só ENVIA. Não existe política de leitura para visitantes.
@@ -198,10 +229,14 @@ drop policy if exists "admin cria dados" on public.settings;
 create policy "admin cria dados" on public.settings
   for insert to authenticated with check (public.is_admin());
 
--- 6) Fotos e vídeos (bucket público para leitura, limite de 50 MB por arquivo)
-insert into storage.buckets (id, name, public, file_size_limit)
-values ('imoveis', 'imoveis', true, 52428800)
-on conflict (id) do update set public = true, file_size_limit = 52428800;
+-- 6) Fotos e vídeos (leitura pública; só imagens e vídeos, até 50 MB por arquivo)
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('imoveis', 'imoveis', true, 52428800,
+        array['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'video/mp4', 'video/quicktime', 'video/webm'])
+on conflict (id) do update set
+  public = true,
+  file_size_limit = 52428800,
+  allowed_mime_types = excluded.allowed_mime_types;
 
 drop policy if exists "equipe envia arquivos" on storage.objects;
 create policy "equipe envia arquivos" on storage.objects

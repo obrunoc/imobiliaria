@@ -18,13 +18,13 @@
   <!--OG:END-->
   <link rel="preload" href="/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="/fonts/montserrat-logo.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="/css/styles.css?v=20261004a" />
-  <script defer src="/js/config.js?v=20261004a"></script>
-  <script defer src="/js/data.js?v=20261004a"></script>
-  <script defer src="/js/utils.js?v=20261004a"></script>
-  <script defer src="/js/store.js?v=20261004a"></script>
-  <script defer src="/js/site.js?v=20261004a"></script>
-  <script defer src="/js/imovel.js?v=20261004a"></script>
+  <link rel="stylesheet" href="/css/styles.css?v=20261004b" />
+  <script defer src="/js/config.js?v=20261004b"></script>
+  <script defer src="/js/data.js?v=20261004b"></script>
+  <script defer src="/js/utils.js?v=20261004b"></script>
+  <script defer src="/js/store.js?v=20261004b"></script>
+  <script defer src="/js/site.js?v=20261004b"></script>
+  <script defer src="/js/imovel.js?v=20261004b"></script>
 </head>
 <body>
   <!-- SPRITE:START -->
@@ -61,6 +61,8 @@
   </svg>
   <!-- SPRITE:END -->
 
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
   <!-- HEADER:START -->
   <header class="header" id="topo">
     <div class="container header__inner">
@@ -88,7 +90,7 @@
   </header>
   <!-- HEADER:END -->
 
-  <main class="page-prop">
+  <main id="conteudo" class="page-prop">
     <div class="container" id="propRoot">
       <p class="muted">Carregando imóvel…</p>
     </div>
@@ -101,11 +103,11 @@
         <svg class="logo__mark" aria-hidden="true"><use href="#logo-mark"/></svg>
         <span class="logo__words"><span class="logo__name">IMÓVEIS</span><span class="logo__tag">Realizando sonhos</span></span>
       </a>
-      <div class="footer__links">
-        <span>© <span id="year"></span> VC Imóveis · Brazópolis - MG · CRECI <span data-s="creci"></span></span>
+      <p class="footer__copy">© <span id="year"></span> VC Imóveis · Brazópolis - MG · CRECI <span data-s="creci"></span></p>
+      <nav class="footer__links" aria-label="Links do rodapé">
         <a href="/privacidade.html">Privacidade</a>
         <a href="/admin.html" rel="nofollow">Área da equipe</a>
-      </div>
+      </nav>
     </div>
   </footer>
 

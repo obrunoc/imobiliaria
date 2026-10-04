@@ -30,10 +30,14 @@ async function rest(cfg, query) {
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const brl = (n) => Number(n || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
 
+/**
+ * Endereço público do site, usado nos links das prévias, do sitemap e dos portais.
+ * Use a variável SITE_URL na Vercel quando tiver domínio próprio; sem ela, aceita só um host válido.
+ */
 function origin(req) {
-  const host = req.headers["x-forwarded-host"] || req.headers.host || "vc-imoveis.vercel.app";
-  const proto = req.headers["x-forwarded-proto"] || "https";
-  return `${proto}://${host}`;
+  if (process.env.SITE_URL) return process.env.SITE_URL.replace(/\/$/, "");
+  const host = String(req.headers.host || "").toLowerCase();
+  return /^[a-z0-9.-]+\.[a-z]{2,}$/.test(host) ? `https://${host}` : "https://vc-imoveis.vercel.app";
 }
 
 async function settings(cfg) {

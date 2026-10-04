@@ -8,7 +8,7 @@
   - Documentos (contratos, recibos, termos) não passam por aqui: são gerados no navegador.
   - Locações ativas guardam só dados básicos (sem CPF/RG).
 */
-const Store = (() => {
+window.Store = (() => {
   "use strict";
 
   const cfg = window.VC_CONFIG || {};
@@ -149,7 +149,7 @@ const Store = (() => {
   const blobUrls = new Map();
   async function resolveSrc(url) {
     if (!url) return "";
-    if (!url.startsWith("idb:")) return url;
+    if (!url.startsWith("idb:")) return U.safeUrl(url, { allowBlob: false });
     if (blobUrls.has(url)) return blobUrls.get(url);
     const rec = await local.get("media", url.slice(4));
     const src = rec ? URL.createObjectURL(rec.blob) : "";
@@ -161,7 +161,10 @@ const Store = (() => {
     const media = await Promise.all((p.media || []).map(async (m) => ({ ...m, src: await resolveSrc(m.url), thumbSrc: await resolveSrc(m.thumb) })));
     return { ...p, media };
   }
-  const resolveLive = (p) => ({ ...p, media: (p.media || []).map((m) => ({ ...m, src: m.url, thumbSrc: m.thumb || "" })) });
+  const resolveLive = (p) => ({
+    ...p,
+    media: (p.media || []).map((m) => ({ ...m, src: U.safeUrl(m.url, { allowBlob: false }), thumbSrc: U.safeUrl(m.thumb, { allowBlob: false }) })),
+  });
   /** Todos os arquivos de um item de mídia (foto grande + miniatura). */
   const pathsOf = (m) => [m.path, m.thumbPath].filter(Boolean);
 
@@ -328,19 +331,32 @@ const Store = (() => {
 
   // ---------- Pedidos de clientes (leads) ----------
   /** Usado pelo site. O visitante só envia; não consegue ler nada de volta. */
+  /** Só os campos conhecidos do "me avise", com tipos e tamanhos fixos. */
+  function cleanCriteria(c) {
+    if (!c || typeof c !== "object") return null;
+    const num = (v, max) => Math.min(max, Math.max(0, Math.round(Number(v) || 0)));
+    return {
+      mode: c.mode === "alugar" || c.mode === "comprar" ? c.mode : null,
+      type: clip(c.type, 40) || null,
+      neighborhood: clip(c.neighborhood, 60) || null,
+      beds: num(c.beds, 20),
+      priceMax: num(c.priceMax, 1e9),
+    };
+  }
+
   async function createLead(input) {
     if (!LEAD_KINDS.includes(input.kind)) throw new Error("Tipo de pedido inválido.");
     if (!input.consent) throw new Error("É preciso aceitar a Política de Privacidade.");
     const row = {
       kind: input.kind,
-      property_id: input.property_id || null,
-      property_code: input.property_code || null,
+      property_id: typeof input.property_id === "string" && /^[\w-]{1,64}$/.test(input.property_id) ? input.property_id : null,
+      property_code: Number.isInteger(Number(input.property_code)) && Number(input.property_code) > 0 ? Number(input.property_code) : null,
       name: clip(input.name, 120),
       phone: clip(input.phone, 30),
       message: clip(input.message, 1500),
-      visit_date: input.visit_date || null,
-      visit_time: input.visit_time ? clip(input.visit_time, 10) : null,
-      criteria: input.criteria || null,
+      visit_date: /^\d{4}-\d{2}-\d{2}$/.test(input.visit_date || "") ? input.visit_date : null,
+      visit_time: /^\d{2}:\d{2}$/.test(input.visit_time || "") ? input.visit_time : null,
+      criteria: cleanCriteria(input.criteria),
       consent: true,
     };
     if (row.name.length < 2) throw new Error("Informe seu nome.");
@@ -430,7 +446,7 @@ const Store = (() => {
     let data = {};
     try {
       if (isLive) {
-      const sb = await client();
+        const sb = await client();
         const r = await sb.from("settings").select("data").eq("id", 1).maybeSingle();
         data = r.data?.data || {};
       } else {
@@ -438,7 +454,9 @@ const Store = (() => {
       }
     } catch { data = {}; }
     const s = { ...(window.DEFAULT_SETTINGS || {}), ...data };
-    s.team = await Promise.all((s.team || []).map(async (m) => ({ ...m, photoSrc: await resolveSrc(m.photo?.url) })));
+    s.googleReviewsUrl = U.safeUrl(s.googleReviewsUrl, { allowBlob: false });
+    s.team = await Promise.all((Array.isArray(s.team) ? s.team : []).map(async (m) => ({ ...m, photoSrc: await resolveSrc(m.photo?.url) })));
+    s.testimonials = Array.isArray(s.testimonials) ? s.testimonials : [];
     return s;
   }
 
@@ -458,7 +476,7 @@ const Store = (() => {
   const auth = {
     async user() {
       if (isLive) {
-      const sb = await client();
+        const sb = await client();
         const { data } = await sb.auth.getSession();
         const u = data.session?.user;
         if (!u) return null;
@@ -472,7 +490,7 @@ const Store = (() => {
     async signIn(email, password) {
       email = email.trim().toLowerCase();
       if (isLive) {
-      const sb = await client();
+        const sb = await client();
         const { error } = await sb.auth.signInWithPassword({ email, password });
         if (error) throw new Error("E-mail ou senha incorretos.");
         const { data: role, error: e2 } = await sb.rpc("my_role");

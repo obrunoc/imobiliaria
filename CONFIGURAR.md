@@ -95,6 +95,32 @@ Peça ao suporte para conferir o arquivo na ativação.
 - **Documentos**: contrato de locação, recibo, entrega de chaves, autorização de venda e vistoria
   com fotos. Nada do que é digitado ali é salvo.
 
+## Segurança
+
+O que o site já faz sozinho:
+
+- Visitantes só **enviam** pedidos; ler, alterar e apagar é só da equipe logada (regras no banco,
+  não apenas na tela).
+- Só entra no painel quem tem login com **e-mail confirmado** e está na lista `staff`.
+  O corretor não exclui imóveis nem altera os dados do site; isso também é garantido pelo banco.
+- Limite contra robôs: no máximo 5 pedidos por telefone por hora e 100 pedidos a cada 10 minutos.
+  A data do pedido é sempre a do servidor.
+- A pasta de fotos só aceita imagens e vídeos (até 50 MB).
+- Tudo que vem de visitantes ou do banco é tratado como texto; links só são aceitos se forem
+  `https://`. O site envia cabeçalhos de proteção (CSP, anti-iframe, HTTPS obrigatório).
+- Documentos (contratos, recibos, vistorias) não são salvos em lugar nenhum.
+
+O que depende de vocês:
+
+- Senhas fortes e diferentes, e **verificação em duas etapas** nas contas do Supabase, da Vercel,
+  do GitHub e no e-mail de quem é dono (admin).
+- Nunca colocar a chave `service_role` do Supabase no site nem mandá-la por WhatsApp/e-mail.
+- Ao sair alguém da equipe: apagar o usuário em Authentication → Users e a linha em `staff`.
+- Sempre que este arquivo `supabase/setup.sql` for atualizado, rodar ele de novo no SQL Editor
+  (pode rodar quantas vezes quiser, não apaga dados).
+- Com domínio próprio, criar na Vercel a variável `SITE_URL` (ex.: `https://vcimoveis.com.br`)
+  em Settings → Environment Variables, para os links das prévias e do Google usarem o domínio.
+
 ## Privacidade (LGPD)
 
 - Os formulários do site pedem o aceite da Política de Privacidade (`privacidade.html`).

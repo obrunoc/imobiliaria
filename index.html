@@ -16,13 +16,13 @@
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="preload" href="/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="/fonts/montserrat-logo.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="/css/styles.css?v=20261004a" />
-  <script defer src="/js/config.js?v=20261004a"></script>
-  <script defer src="/js/data.js?v=20261004a"></script>
-  <script defer src="/js/utils.js?v=20261004a"></script>
-  <script defer src="/js/store.js?v=20261004a"></script>
-  <script defer src="/js/site.js?v=20261004a"></script>
-  <script defer src="/js/app.js?v=20261004a"></script>
+  <link rel="stylesheet" href="/css/styles.css?v=20261004b" />
+  <script defer src="/js/config.js?v=20261004b"></script>
+  <script defer src="/js/data.js?v=20261004b"></script>
+  <script defer src="/js/utils.js?v=20261004b"></script>
+  <script defer src="/js/store.js?v=20261004b"></script>
+  <script defer src="/js/site.js?v=20261004b"></script>
+  <script defer src="/js/app.js?v=20261004b"></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -80,6 +80,8 @@
   </svg>
   <!-- SPRITE:END -->
 
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
   <!-- HEADER:START -->
   <header class="header" id="topo">
     <div class="container header__inner">
@@ -107,8 +109,8 @@
   </header>
   <!-- HEADER:END -->
 
-  <main>
-    <section class="hero">
+  <main id="conteudo">
+    <section class="hero" aria-label="Busca de imóveis">
       <div class="container hero__inner">
         <svg class="hero__art" viewBox="0 0 400 300" aria-hidden="true">
           <path d="M24 280 Q200 -60 376 280" fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round"/>
@@ -140,17 +142,17 @@
       </div>
     </section>
 
-    <section class="featured" id="destaques" hidden>
+    <section class="featured" id="destaques" aria-labelledby="destaquesTitle" hidden>
       <div class="container">
         <div class="section-head">
-          <h2>Destaques da semana</h2>
+          <h2 id="destaquesTitle">Destaques da semana</h2>
           <p class="muted">Selecionados pela nossa equipe.</p>
         </div>
         <div class="grid" id="featuredGrid"></div>
       </div>
     </section>
 
-    <section class="listings" id="imoveis">
+    <section class="listings" id="imoveis" aria-labelledby="resultsTitle">
       <div class="container">
         <div class="results__head">
           <div>
@@ -217,23 +219,23 @@
       </div>
     </section>
 
-    <section class="alert-band">
+    <section class="alert-band" aria-labelledby="alertBandTitle">
       <div class="container alert-band__inner">
         <span class="alert-band__icon"><svg><use href="#i-bell"/></svg></span>
         <div>
-          <h2>Não achou o que procura?</h2>
+          <h2 id="alertBandTitle">Não achou o que procura?</h2>
           <p>Conte o que você precisa e a gente avisa no seu WhatsApp assim que aparecer um imóvel assim.</p>
         </div>
         <button class="btn btn--dark" type="button" data-open-alert>Me avise quando aparecer</button>
       </div>
     </section>
 
-    <section class="about" id="sobre">
+    <section class="about" id="sobre" aria-labelledby="aboutTitle">
       <div class="container">
         <div class="about__grid">
           <div>
             <span class="eyebrow">Quem somos</span>
-            <h2>Gente da cidade cuidando do seu próximo endereço.</h2>
+            <h2 id="aboutTitle">Gente da cidade cuidando do seu próximo endereço.</h2>
             <p class="about__text" id="aboutText"></p>
             <ul class="about__facts">
               <li data-s-wrap><svg><use href="#i-key"/></svg><span>CRECI <b data-s="creci"></b></span></li>
@@ -253,11 +255,11 @@
       </div>
     </section>
 
-    <section class="owner" id="anunciar">
+    <section class="owner" id="anunciar" aria-labelledby="ownerTitle">
       <div class="container owner__inner">
         <div>
           <span class="eyebrow eyebrow--dark">Para proprietários</span>
-          <h2>Quer vender ou alugar seu imóvel?</h2>
+          <h2 id="ownerTitle">Quer vender ou alugar seu imóvel?</h2>
           <ul class="ticks">
             <li><svg><use href="#i-check"/></svg> Avaliação de preço sem custo</li>
             <li><svg><use href="#i-check"/></svg> Fotos e anúncio no site e nas redes</li>
@@ -280,13 +282,14 @@
       </div>
     </section>
 
-    <section class="contact" id="contato">
+    <section class="contact" id="contato" aria-labelledby="contactTitle">
       <div class="container contact__grid">
         <div>
-          <h2>Fale com a VC Imóveis</h2>
+          <h2 id="contactTitle">Fale com a VC Imóveis</h2>
           <p>Atendimento por WhatsApp, telefone ou no nosso escritório.</p>
           <a class="btn btn--dark" data-s-whats="Olá! Vim pelo site da VC Imóveis." target="_blank" rel="noopener"><svg><use href="#i-whats"/></svg> Chamar no WhatsApp</a>
         </div>
+        <address class="contact__address">
         <ul class="contact__list">
           <li data-s-wrap><svg><use href="#i-phone"/></svg><a data-s-phone><span data-s="phone"></span></a></li>
           <li data-s-wrap><svg><use href="#i-pin"/></svg><span><span data-s="address"></span> · <a data-s-maps target="_blank" rel="noopener" class="contact__map">Como chegar</a></span></li>
@@ -294,6 +297,7 @@
           <li data-s-wrap><svg><use href="#i-search"/></svg><span data-s="email"></span></li>
           <li><a data-s-insta target="_blank" rel="noopener" hidden><svg><use href="#i-insta"/></svg><span data-insta-label></span></a></li>
         </ul>
+        </address>
       </div>
     </section>
   </main>
@@ -305,11 +309,11 @@
         <svg class="logo__mark" aria-hidden="true"><use href="#logo-mark"/></svg>
         <span class="logo__words"><span class="logo__name">IMÓVEIS</span><span class="logo__tag">Realizando sonhos</span></span>
       </a>
-      <div class="footer__links">
-        <span>© <span id="year"></span> VC Imóveis · Brazópolis - MG · CRECI <span data-s="creci"></span></span>
+      <p class="footer__copy">© <span id="year"></span> VC Imóveis · Brazópolis - MG · CRECI <span data-s="creci"></span></p>
+      <nav class="footer__links" aria-label="Links do rodapé">
         <a href="/privacidade.html">Privacidade</a>
         <a href="/admin.html" rel="nofollow">Área da equipe</a>
-      </div>
+      </nav>
     </div>
   </footer>
 

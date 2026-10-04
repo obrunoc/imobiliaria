@@ -69,6 +69,12 @@ window.SiteSettings = (() => {
     if (w.length === 10 || w.length === 11) w = `55${w}`;
     if (w.length < 12) { $("#sWhats").classList.add("is-invalid"); $("#sWhats").focus(); toast("Informe o WhatsApp com DDD."); return; }
     data.whatsapp = w;
+    if (data.googleReviewsUrl && !U.safeUrl(data.googleReviewsUrl, { allowBlob: false }).startsWith("https://")) {
+      $("#sGoogle").classList.add("is-invalid");
+      $("#sGoogle").focus();
+      toast("O link das avaliações precisa começar com https://");
+      return;
+    }
     const btn = $("#saveSite");
     btn.disabled = true;
     btn.textContent = "Salvando…";

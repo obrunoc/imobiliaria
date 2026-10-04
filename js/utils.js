@@ -40,6 +40,22 @@ window.U = (() => {
       el.value = out;
     },
 
+    /**
+     * Só deixa passar endereços http(s) e, se pedido, blob: (arquivos locais ainda não enviados).
+     * Bloqueia "javascript:", "data:" e afins vindos do banco ou de formulários.
+     */
+    safeUrl(value, { allowBlob = true } = {}) {
+      const s = String(value ?? "").trim();
+      if (!s) return "";
+      if (allowBlob && s.startsWith("blob:")) return s;
+      try {
+        const url = new URL(s, location.origin);
+        return url.protocol === "https:" || url.protocol === "http:" ? url.href : "";
+      } catch {
+        return "";
+      }
+    },
+
     /** Copia texto; se o navegador não deixar, mostra para a pessoa copiar. */
     async copy(text) {
       try { await navigator.clipboard.writeText(text); return true; }

@@ -23,7 +23,10 @@ Para colocar no ar com banco de dados e login reais, siga o [CONFIGURAR.md](CONF
 - `imovel.html`, `js/imovel.js`: página própria de cada imóvel
 - `privacidade.html`: política de privacidade
 - `js/site.js`: partes comuns do site (ficha do imóvel, formulários com consentimento, simulador)
-- `admin.html`, `js/admin*.js`, `css/admin.css`: painel da equipe
+- `admin.html`, `css/admin.css`: painel da equipe
+  - `js/admin.js`: login, papéis (dono/corretor), abas e avisos
+  - `js/admin-properties.js`: lista e editor de imóveis
+  - `js/admin-leads.js`, `js/admin-rentals.js`, `js/admin-site.js`, `js/admin-art.js`: clientes, locações, dados do site e arte
 - `js/contracts.js`, `js/docs.js`: documentos (gerados no navegador, nada é salvo)
 - `js/store.js`: camada de dados (Supabase ou modo demonstração)
 - `js/config.js`: chaves públicas do Supabase
