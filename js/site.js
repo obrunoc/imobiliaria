@@ -127,7 +127,7 @@ window.Site = (() => {
     const src = cover(p, true);
     const eager = i < 3;
     return `
-      <article class="card" data-id="${esc(p.id)}" tabindex="0" aria-label="${esc(p.type)} em ${esc(p.neighborhood)}, código ${esc(p.code)}">
+      <article class="card" data-id="${esc(p.id)}" data-reveal tabindex="0" aria-label="${esc(p.type)} em ${esc(p.neighborhood)}, código ${esc(p.code)}">
         <div class="card__media">
           ${src ? `<img src="${esc(src)}" alt="" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async" />` : ""}
           ${badgesHTML(p)}

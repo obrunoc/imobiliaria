@@ -16,13 +16,14 @@
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="preload" href="/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="/fonts/montserrat-logo.woff2" as="font" type="font/woff2" crossorigin />
-  <link rel="stylesheet" href="/css/styles.css?v=20261004b" />
-  <script defer src="/js/config.js?v=20261004b"></script>
-  <script defer src="/js/data.js?v=20261004b"></script>
-  <script defer src="/js/utils.js?v=20261004b"></script>
-  <script defer src="/js/store.js?v=20261004b"></script>
-  <script defer src="/js/site.js?v=20261004b"></script>
-  <script defer src="/js/app.js?v=20261004b"></script>
+  <link rel="stylesheet" href="/css/styles.css?v=20261005a" />
+  <script defer src="/js/config.js?v=20261005a"></script>
+  <script defer src="/js/data.js?v=20261005a"></script>
+  <script defer src="/js/utils.js?v=20261005a"></script>
+  <script defer src="/js/store.js?v=20261005a"></script>
+  <script defer src="/js/site.js?v=20261005a"></script>
+  <script defer src="/js/app.js?v=20261005a"></script>
+  <script defer src="/js/motion.js?v=20261005a"></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -112,12 +113,15 @@
   <main id="conteudo">
     <section class="hero" aria-label="Busca de imóveis">
       <div class="container hero__inner">
-        <svg class="hero__art" viewBox="0 0 400 300" aria-hidden="true">
-          <path d="M24 280 Q200 -60 376 280" fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round"/>
-          <circle cx="186" cy="172" r="38" style="fill: var(--gold)"/>
-        </svg>
+        <div class="hero__scene" aria-hidden="true">
+          <span class="hero__blob" data-parallax="-0.10"></span>
+          <svg class="hero__arc" data-parallax="0.12" viewBox="0 0 400 300"><path d="M24 280 Q200 -60 376 280" fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round"/></svg>
+          <span class="hero__sun" data-parallax="0.32"></span>
+          <span class="hero__dot hero__dot--a" data-parallax="0.5"></span>
+          <span class="hero__dot hero__dot--b" data-parallax="0.22"></span>
+        </div>
         <h1>Realizando <mark>sonhos</mark> em Brazópolis.</h1>
-        <p>Casas, apartamentos e terrenos para comprar ou alugar, com quem conhece cada bairro da cidade.</p>
+        <p class="hero__lead">Casas, apartamentos e terrenos para comprar ou alugar, com quem conhece cada bairro da cidade.</p>
 
         <form class="search" id="heroSearch" role="search">
           <div class="search__tabs" role="tablist" aria-label="Tipo de negócio">
@@ -144,7 +148,7 @@
 
     <section class="featured" id="destaques" aria-labelledby="destaquesTitle" hidden>
       <div class="container">
-        <div class="section-head">
+        <div class="section-head" data-reveal>
           <h2 id="destaquesTitle">Destaques da semana</h2>
           <p class="muted">Selecionados pela nossa equipe.</p>
         </div>
@@ -154,7 +158,7 @@
 
     <section class="listings" id="imoveis" aria-labelledby="resultsTitle">
       <div class="container">
-        <div class="results__head">
+        <div class="results__head" data-reveal>
           <div>
             <h2 id="resultsTitle">Imóveis à venda</h2>
             <p class="muted" id="resultsCount" aria-live="polite"></p>
@@ -220,7 +224,8 @@
     </section>
 
     <section class="alert-band" aria-labelledby="alertBandTitle">
-      <div class="container alert-band__inner">
+      <svg class="band-arc" data-parallax="0.18" viewBox="0 0 400 300" aria-hidden="true"><path d="M24 280 Q200 -60 376 280" fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="round"/></svg>
+      <div class="container alert-band__inner" data-reveal>
         <span class="alert-band__icon"><svg><use href="#i-bell"/></svg></span>
         <div>
           <h2 id="alertBandTitle">Não achou o que procura?</h2>
@@ -233,7 +238,7 @@
     <section class="about" id="sobre" aria-labelledby="aboutTitle">
       <div class="container">
         <div class="about__grid">
-          <div>
+          <div data-reveal>
             <span class="eyebrow">Quem somos</span>
             <h2 id="aboutTitle">Gente da cidade cuidando do seu próximo endereço.</h2>
             <p class="about__text" id="aboutText"></p>
@@ -242,10 +247,10 @@
               <li data-s-wrap><svg><use href="#i-pin"/></svg><span data-s="address"></span></li>
             </ul>
           </div>
-          <div class="team" id="team" hidden></div>
+          <div class="team" id="team" data-reveal hidden></div>
         </div>
 
-        <div class="reviews" id="reviews" hidden>
+        <div class="reviews" id="reviews" data-reveal hidden>
           <div class="reviews__head">
             <h3>O que dizem nossos clientes</h3>
             <a class="link-btn" id="googleReviews" target="_blank" rel="noopener" hidden>Ver avaliações no Google</a>
@@ -256,8 +261,9 @@
     </section>
 
     <section class="owner" id="anunciar" aria-labelledby="ownerTitle">
+      <span class="owner__ring" data-parallax="-0.16" aria-hidden="true"></span>
       <div class="container owner__inner">
-        <div>
+        <div data-reveal>
           <span class="eyebrow eyebrow--dark">Para proprietários</span>
           <h2 id="ownerTitle">Quer vender ou alugar seu imóvel?</h2>
           <ul class="ticks">
@@ -266,7 +272,7 @@
             <li><svg><use href="#i-check"/></svg> Cuidamos das visitas, contrato e vistoria</li>
           </ul>
         </div>
-        <form class="owner__form" id="ownerForm" novalidate>
+        <form class="owner__form" id="ownerForm" data-reveal novalidate>
           <h3>Fale com a gente</h3>
           <div class="seg seg--light" role="radiogroup" aria-label="O que deseja">
             <label><input type="radio" name="ownerMode" value="vender" checked /><span>Vender</span></label>
@@ -284,12 +290,12 @@
 
     <section class="contact" id="contato" aria-labelledby="contactTitle">
       <div class="container contact__grid">
-        <div>
+        <div data-reveal>
           <h2 id="contactTitle">Fale com a VC Imóveis</h2>
           <p>Atendimento por WhatsApp, telefone ou no nosso escritório.</p>
           <a class="btn btn--dark" data-s-whats="Olá! Vim pelo site da VC Imóveis." target="_blank" rel="noopener"><svg><use href="#i-whats"/></svg> Chamar no WhatsApp</a>
         </div>
-        <address class="contact__address">
+        <address class="contact__address" data-reveal>
         <ul class="contact__list">
           <li data-s-wrap><svg><use href="#i-phone"/></svg><a data-s-phone><span data-s="phone"></span></a></li>
           <li data-s-wrap><svg><use href="#i-pin"/></svg><span><span data-s="address"></span> · <a data-s-maps target="_blank" rel="noopener" class="contact__map">Como chegar</a></span></li>
